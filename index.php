@@ -43,6 +43,7 @@ if (isset($_POST['retirer'])) {
         <h1>Ma boutique en ligne</h1>
         <nav>
             <a href="#">Accueil</a>
+            <a href="offre_etudiants.php">Offre étudiants 2025</a>
             <a href="#panier">Panier (<?php echo array_sum($_SESSION['panier']); ?>)</a>
         </nav>
     </header>
