@@ -8,7 +8,6 @@ function createCard($nom, $prix, $description, $stock) {
                 <p class="card-desc">' . htmlspecialchars($description) . '</p>
                 <div class="card-footer">
                     <span class="card-price">' . htmlspecialchars($prix) . ' €</span>
-                    <button class="card-btn">Acheter</button>
                     <span class="card-stock">' . ($stock > 0 ? 'En stock' : 'Rupture de stock') . '</span>
                 </div>
             </div>
