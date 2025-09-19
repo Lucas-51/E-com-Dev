@@ -42,9 +42,14 @@ if (isset($_POST['retirer'])) {
     <header>
         <h1>Ma boutique en ligne</h1>
         <nav>
-            <a href="#">Accueil</a>
+            <a href="index.php">Accueil</a>
+            <a href="categorie.php">Catégories</a>
+            <a href="produit.php">Produit</a>
+            <a href="contact.php">Contact</a>
+            <a href="panier.php">Panier (<?php echo array_sum($_SESSION['panier']); ?>)</a>
+            <a href="connexion.php">Connexion</a>
+            <a href="inscription.php">Inscription</a>
             <a href="offre_etudiants.php">Offre étudiants 2025</a>
-            <a href="#panier">Panier (<?php echo array_sum($_SESSION['panier']); ?>)</a>
         </nav>
     </header>
     <main>
