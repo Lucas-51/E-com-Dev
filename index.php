@@ -70,11 +70,22 @@ $panierCount = array_sum($_SESSION['panier']);
             .main-nav ul{flex-wrap:wrap;gap:12px 16px}
             .dropdown .dropdown-menu{position:static;box-shadow:none;border:1px solid rgba(255,255,255,.08);margin-top:6px}
         }
+
+        /* Header flex */
+        .header-flex{
+            display:flex;justify-content:space-between;align-items:center;margin:0 20px
+        }
+        .header-flex h1{
+            font-size:1.8em;margin:0;color:#fff
+        }
     </style>
 </head>
 <body>
 <header>
-    <h1>Ma boutique en ligne</h1>
+    <div class="header-flex">
+        <h1>Ma boutique en ligne</h1>
+        <a href="inscription.php" class="sign-in-btn">Sign in</a>
+    </div>
 
     <nav class="main-nav">
         <ul>
@@ -94,9 +105,6 @@ $panierCount = array_sum($_SESSION['panier']);
             <li><a href="contact.php">Contact</a></li>
             <li><a href="panier.php">Panier (<?= $panierCount ?>)</a></li>
             <li><a href="connexion.php">Connexion</a></li>
-
-            <li class="nav-spacer"></li>
-            <li><a href="inscription.php" class="sign-in-btn">Sign in</a></li>
         </ul>
     </nav>
 </header>
