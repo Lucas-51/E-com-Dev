@@ -5,9 +5,9 @@ include './includes/card.php'; // doit définir function createCard($nom,$prix,$
 
 // --- Données produits (tu peux enrichir/brancher BDD) ---
 $produits = [
-    ["nom" => "airpods", "prix" => 199,  "description" => "AirPods Apple sans fil.",         "stock" => 10, "categorie" => "airpods"],
-    ["nom" => "iphone",  "prix" => 999,  "description" => "iPhone dernière génération.",      "stock" => 5,  "categorie" => "iphone"],
-    ["nom" => "Macbook", "prix" => 1499, "description" => "Macbook Pro 16 pouces.",           "stock" => 2,  "categorie" => "macbook"],
+    ["nom" => "airpods", "prix" => 199,  "description" => "AirPods Apple sans fil",         "stock" => 10, "categorie" => "airpods"],
+    ["nom" => "iphone",  "prix" => 999,  "description" => "iPhone dernière génération",      "stock" => 5,  "categorie" => "iphone"],
+    ["nom" => "Macbook", "prix" => 1499, "description" => "Macbook Pro 16 pouces",           "stock" => 2,  "categorie" => "macbook"],
     // exemple si tu veux en rajouter :
     // ["nom" => "iPad", "prix" => 699, "description" => "iPad Air dernière génération.", "stock" => 4, "categorie" => "ipad"],
 ];
@@ -110,39 +110,19 @@ $panierCount = array_sum($_SESSION['panier']);
 
 <main>
     <section class="produits">
-        <h2>Nos produits</h2>
+        <h2 style="text-align:center;">Nos produits</h2>
         <div class="card-container">
             <?php foreach ($produits as $p): ?>
-                <form method="post">
+                <div style="display: flex; flex-direction: column; align-items: center;">
                     <?php
-                        // createCard doit retourner le HTML de la carte (pas de echo dans la fonction)
                         echo createCard($p["nom"], $p["prix"], $p["description"], $p["stock"]);
                     ?>
-                    <input type="hidden" name="nom" value="<?= htmlspecialchars($p["nom"]) ?>">
-                    <button type="submit" name="ajouter" class="card-btn">Ajouter au panier</button>
-                </form>
+                </div>
             <?php endforeach; ?>
         </div>
     </section>
 
-    <section id="panier" class="panier">
-        <h2>Votre panier</h2>
-        <?php if (empty($_SESSION['panier'])): ?>
-            <p>Votre panier est vide.</p>
-        <?php else: ?>
-            <ul>
-                <?php foreach ($_SESSION['panier'] as $nom => $quantite): ?>
-                    <li>
-                        <?= htmlspecialchars($nom) ?> x <?= (int)$quantite ?>
-                        <form method="post" style="display:inline;">
-                            <input type="hidden" name="nom" value="<?= htmlspecialchars($nom) ?>">
-                            <button type="submit" name="retirer">Retirer</button>
-                        </form>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        <?php endif; ?>
-    </section>
+    <!-- Suppression de la section panier ici, elle est déplacée dans panier.php -->
 </main>
 </body>
 </html>
