@@ -70,43 +70,31 @@ $panierCount = array_sum($_SESSION['panier']);
             .main-nav ul{flex-wrap:wrap;gap:12px 16px}
             .dropdown .dropdown-menu{position:static;box-shadow:none;border:1px solid rgba(255,255,255,.08);margin-top:6px}
         }
-
-        /* Header flex */
-        .header-flex{
-            display:flex;justify-content:space-between;align-items:center;margin:0 20px
-        }
-        .header-flex h1{
-            font-size:1.8em;margin:0;color:#fff
-        }
     </style>
 </head>
 <body>
 <header>
-    <div class="header-flex">
-        <h1>Ma boutique en ligne</h1>
-        <a href="inscription.php" class="sign-in-btn">Sign in</a>
+    <div style="display: flex; flex-direction: column; align-items: center; position: relative;">
+        <h1 style="text-align: center; width: 100%; margin: 0;">Ma boutique en ligne</h1>
+        <a href="inscription.php" class="sign-in-btn" style="position: absolute; right: 32px; top: 0;">Sign in</a>
+        <nav class="main-nav" style="width: 100%; margin-top: 20px;">
+            <ul style="display: flex; justify-content: center; align-items: center; gap: 40px; margin: 0; padding: 0; list-style: none; width: 100%;">
+                <li><a href="index.php">Accueil</a></li>
+                <li class="dropdown" id="cat-dropdown">
+                    <a href="categorie.php">Catégories</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="categorie.php?cat=iphone">iPhone</a></li>
+                        <li><a href="categorie.php?cat=ipad">iPad</a></li>
+                        <li><a href="categorie.php?cat=macbook">Macbook</a></li>
+                        <li><a href="categorie.php?cat=airpods">AirPods</a></li>
+                    </ul>
+                </li>
+                <li><a href="produit.php">Produit</a></li>
+                <li><a href="contact.php">Contact</a></li>
+                <li><a href="panier.php">Panier (<?= $panierCount ?>)</a></li>
+            </ul>
+        </nav>
     </div>
-
-    <nav class="main-nav">
-        <ul>
-            <li><a href="index.php">Accueil</a></li>
-
-            <li class="dropdown" id="cat-dropdown">
-                <a href="categorie.php">Catégories</a>
-                <ul class="dropdown-menu">
-                    <li><a href="categorie.php?cat=iphone">iPhone</a></li>
-                    <li><a href="categorie.php?cat=ipad">iPad</a></li>
-                    <li><a href="categorie.php?cat=macbook">Macbook</a></li>
-                    <li><a href="categorie.php?cat=airpods">AirPods</a></li>
-                </ul>
-            </li>
-
-            <li><a href="produit.php">Produit</a></li>
-            <li><a href="contact.php">Contact</a></li>
-            <li><a href="panier.php">Panier (<?= $panierCount ?>)</a></li>
-            <li><a href="connexion.php">Connexion</a></li>
-        </ul>
-    </nav>
 </header>
 
 <script>
