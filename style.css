@@ -1,3 +1,114 @@
+.panier-container {
+    max-width: 700px;
+    margin: 60px auto;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    padding: 48px 32px 40px 32px;
+}
+.panier-container h2 {
+    text-align: center;
+    font-size: 2.4em;
+    margin-bottom: 32px;
+    color: #222;
+}
+.panier-container p {
+    text-align: center;
+    font-size: 1.7em;
+    color: #222;
+}
+.panier-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 24px;
+}
+.panier-table th, .panier-table td {
+    border: 1px solid #e0e0e0;
+    padding: 12px 8px;
+    text-align: center;
+}
+.panier-table th {
+    background: #f5f5f5;
+}
+.panier-container .links {
+    text-align: center;
+    margin-top: 24px;
+}
+.panier-container .links a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+    margin: 0 8px;
+}
+.panier-container .links a:hover {
+    text-decoration: underline;
+}
+
+/* Styles spécifiques produit.php (complément card déjà présent) */
+.card {
+    background: #fff;
+}
+
+.contact-container {
+    max-width: 400px;
+    margin: 60px auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 32px 28px 24px 28px;
+}
+.contact-container h1 {
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 28px;
+}
+.contact-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.contact-container label {
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+.contact-container input,
+.contact-container textarea {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+}
+.contact-container textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+.contact-container button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s;
+}
+.contact-container button:hover {
+    background: #0056b3;
+}
+.contact-container .links {
+    text-align: center;
+    margin-top: 18px;
+}
+.contact-container .links a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+.contact-container .links a:hover {
+    text-decoration: underline;
+}
 .inscription-container {
     max-width: 400px;
     margin: 60px auto;

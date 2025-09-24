@@ -36,48 +36,6 @@ $produits = [
     <meta charset="UTF-8">
     <title>Produit</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        body {
-            background: #f7f7f7;
-            font-family: 'Segoe UI', Arial, sans-serif;
-        }
-        .card-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 16px;
-            padding: 16px;
-        }
-        .card {
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            overflow: hidden;
-            margin: 16px;
-            max-width: 300px;
-            background: #fff;
-        }
-        .card-img {
-            width: 100%;
-            height: auto;
-        }
-        .card-body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 16px;
-        }
-        .card-title {
-            font-size: 1.5em;
-            margin: 0 0 8px;
-            text-align: center;
-        }
-        .card-desc {
-            font-size: 1em;
-            margin: 0 0 16px;
-            text-align: center;
-            display: block;
-        }
-    </style>
 </head>
 <body>
 <header>
