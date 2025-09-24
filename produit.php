@@ -3,6 +3,26 @@
 session_start();
 include './includes/card.php';
 
+// --- Gestion panier (logique identique à index.php) ---
+if (!isset($_SESSION['panier'])) {
+    $_SESSION['panier'] = [];
+}
+if (isset($_POST['ajouter'])) {
+    $nom = $_POST['nom'] ?? '';
+    if ($nom !== '') {
+        $_SESSION['panier'][$nom] = ($_SESSION['panier'][$nom] ?? 0) + 1;
+    }
+}
+if (isset($_POST['retirer'])) {
+    $nom = $_POST['nom'] ?? '';
+    if (isset($_SESSION['panier'][$nom])) {
+        $_SESSION['panier'][$nom]--;
+        if ($_SESSION['panier'][$nom] <= 0) {
+            unset($_SESSION['panier'][$nom]);
+        }
+    }
+}
+
 $produits = [
     ["nom" => "airpods", "prix" => 199,  "description" => "AirPods Apple sans fil",         "stock" => 10, "categorie" => "airpods"],
     ["nom" => "iphone",  "prix" => 999,  "description" => "iPhone dernière génération",      "stock" => 5,  "categorie" => "iphone"],
