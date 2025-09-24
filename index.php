@@ -13,10 +13,13 @@ try {
     $produits = [];
 }
 
+require_once 'includes/panier_db.php';
+
 // --- Panier ---
 if (!isset($_SESSION['panier'])) {
-    $_SESSION['panier'] = [];
+    $_SESSION['panier'] = isset($_SESSION['user_id']) ? chargerPanier($pdo, $_SESSION['user_id']) : [];
 }
+
 if (isset($_POST['ajouter'])) {
     $nom = $_POST['nom'] ?? '';
     if ($nom !== '') {
@@ -27,15 +30,26 @@ if (isset($_POST['ajouter'])) {
         
         if ($produit && ($produit['stock'] > ($_SESSION['panier'][$nom] ?? 0))) {
             $_SESSION['panier'][$nom] = ($_SESSION['panier'][$nom] ?? 0) + 1;
+            
+            // Sauvegarder le panier si l'utilisateur est connecté
+            if (isset($_SESSION['user_id'])) {
+                sauvegarderPanier($pdo, $_SESSION['user_id'], $_SESSION['panier']);
+            }
         }
     }
 }
+
 if (isset($_POST['retirer'])) {
     $nom = $_POST['nom'] ?? '';
     if (isset($_SESSION['panier'][$nom]) && $_SESSION['panier'][$nom] > 0) {
         $_SESSION['panier'][$nom]--;
         if ($_SESSION['panier'][$nom] <= 0) {
             unset($_SESSION['panier'][$nom]);
+        }
+        
+        // Sauvegarder le panier si l'utilisateur est connecté
+        if (isset($_SESSION['user_id'])) {
+            sauvegarderPanier($pdo, $_SESSION['user_id'], $_SESSION['panier']);
         }
     }
 }
