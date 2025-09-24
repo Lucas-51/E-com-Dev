@@ -7,6 +7,7 @@ $categories = [
     'iphone'  => 'iPhone',
     'macbook' => 'Macbook',
     'airpods' => 'AirPods',
+    'ipad'    => 'iPad',
 ];
 
 // --- Définition des produits (à remplacer par BDD si besoin) ---
@@ -14,6 +15,7 @@ $produits = [
     ["nom"=>"airpods","prix"=>199,"description"=>"AirPods Apple sans fil.","stock"=>10,"categorie"=>"airpods"],
     ["nom"=>"iphone","prix"=>999,"description"=>"iPhone dernière génération.","stock"=>5,"categorie"=>"iphone"],
     ["nom"=>"Macbook","prix"=>1499,"description"=>"Macbook Pro 16 pouces.","stock"=>2,"categorie"=>"macbook"],
+    ["nom"=>"ipad","prix"=>599,"description"=>"iPad 10,9 pouces dernière génération.","stock"=>7,"categorie"=>"ipad"],
 ];
 
 // --- Gestion panier (même logique que index.php) ---
@@ -130,11 +132,13 @@ $produitsFiltres = $catLabel
                         <p style="text-align:center;">Aucun produit dans cette catégorie.</p>
                     <?php else: ?>
                         <?php foreach ($produitsFiltres as $p): ?>
-                            <form method="post">
-                                <?php echo createCard($p["nom"], $p["prix"], $p["description"], $p["stock"]); ?>
-                                <input type="hidden" name="nom" value="<?php echo htmlspecialchars($p["nom"]); ?>">
-                                <button type="submit" name="ajouter" class="card-btn">Ajouter au panier</button>
-                            </form>
+                            <div style="display: flex; flex-direction: column; align-items: center;">
+                                <form method="post" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+                                    <?php echo createCard($p["nom"], $p["prix"], $p["description"], $p["stock"]); ?>
+                                    <input type="hidden" name="nom" value="<?php echo htmlspecialchars($p["nom"]); ?>">
+                                    <button type="submit" name="ajouter" class="card-btn" style="margin-top:16px; width:80%; max-width:220px;">Ajouter au panier</button>
+                                </form>
+                            </div>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
