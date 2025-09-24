@@ -49,45 +49,6 @@ $produitsFiltres = $catLabel
     <meta charset="UTF-8">
     <title>Catégories</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Petits styles pour les catégories */
-        .cats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 16px;
-            max-width: 900px;
-            margin: 24px auto;
-            padding: 0 16px;
-        }
-        .cat-card {
-            background: #fff;
-            border: 1px solid #e6e6e6;
-            border-radius: 10px;
-            text-align: center;
-            padding: 18px 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            transition: transform .15s ease, box-shadow .15s ease;
-        }
-        .cat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 14px rgba(0,0,0,0.1);
-        }
-        .cat-card a {
-            text-decoration: none;
-            color: #222;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-        .breadcrumb {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 16px;
-            color: #666;
-            font-size: 0.9rem;
-        }
-        .breadcrumb a { color: #007bff; text-decoration: none; }
-        .breadcrumb a:hover { text-decoration: underline; }
-    </style>
 </head>
 <body>
     <header>

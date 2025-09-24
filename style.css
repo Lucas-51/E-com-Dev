@@ -1,3 +1,162 @@
+.inscription-container {
+    max-width: 400px;
+    margin: 60px auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 32px 28px 24px 28px;
+}
+.inscription-container h1 {
+    text-align: center;
+    font-size: 2.2em;
+    margin-bottom: 28px;
+}
+.inscription-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.inscription-container label {
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+.inscription-container input {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+}
+.inscription-container button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s;
+}
+.inscription-container button:hover {
+    background: #0056b3;
+}
+.inscription-container .links {
+    text-align: center;
+    margin-top: 18px;
+}
+.inscription-container .links a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+    margin: 0 8px;
+}
+.inscription-container .links a:hover {
+    text-decoration: underline;
+}
+.inscription-container .message {
+    text-align: center;
+    margin-top: 16px;
+    color: #d32f2f;
+}
+
+.cats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    max-width: 900px;
+    margin: 24px auto;
+    padding: 0 16px;
+}
+.cat-card {
+    background: #fff;
+    border: 1px solid #e6e6e6;
+    border-radius: 10px;
+    text-align: center;
+    padding: 18px 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+.cat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+}
+.cat-card a {
+    text-decoration: none;
+    color: #222;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+.breadcrumb {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 16px;
+    color: #666;
+    font-size: 0.9rem;
+}
+.breadcrumb a { color: #007bff; text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.connexion-container {
+    max-width: 400px;
+    margin: 60px auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 32px 28px 24px 28px;
+}
+.connexion-container h1 {
+    text-align: center;
+    font-size: 2.2em;
+    margin-bottom: 28px;
+}
+.connexion-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.connexion-container label {
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+.connexion-container input {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+}
+.connexion-container button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s;
+}
+.connexion-container button:hover {
+    background: #0056b3;
+}
+.connexion-container .links {
+    text-align: center;
+    margin-top: 18px;
+}
+.connexion-container .links a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+    margin: 0 8px;
+}
+.connexion-container .links a:hover {
+    text-decoration: underline;
+}
+.connexion-container .message {
+    text-align: center;
+    margin-top: 16px;
+    color: #d32f2f;
+}
 .card-container {
     display: flex;
     flex-wrap: wrap;

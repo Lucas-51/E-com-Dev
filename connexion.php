@@ -32,75 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Connexion</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        body {
-            background: #f7f7f7;
-            font-family: 'Segoe UI', Arial, sans-serif;
-        }
-        .connexion-container {
-            max-width: 400px;
-            margin: 60px auto;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-            padding: 32px 28px 24px 28px;
-        }
-        .connexion-container h1 {
-            text-align: center;
-            font-size: 2.2em;
-            margin-bottom: 28px;
-        }
-        .connexion-container form {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        .connexion-container label {
-            font-weight: 500;
-            margin-bottom: 6px;
-        }
-        .connexion-container input {
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: 1em;
-        }
-        .connexion-container button {
-            background: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            padding: 10px;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: background 0.2s;
-        }
-        .connexion-container button:hover {
-            background: #0056b3;
-        }
-        .connexion-container .links {
-            text-align: center;
-            margin-top: 18px;
-        }
-        .connexion-container .links a {
-            color: #007bff;
-            text-decoration: none;
-            font-weight: 500;
-            margin: 0 8px;
-        }
-        .connexion-container .links a:hover {
-            text-decoration: underline;
-        }
-        .connexion-container .message {
-            text-align: center;
-            margin-top: 16px;
-            color: #d32f2f;
-        }
-    </style>
-</head>
+    <link rel="stylesheet" href="/E-com-Dev/style.css"></head>
 <body>
     <div class="connexion-container">
         <h1>Connexion client</h1>
