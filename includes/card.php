@@ -17,11 +17,11 @@ function createCard($nom, $prix, $description, $stock) {
                     <form method="post" class="quantity-form">
                         <input type="hidden" name="nom" value="' . htmlspecialchars($nom) . '">
                         <button type="submit" name="retirer" class="quantity-btn" ' . ($currentStock >= $stock ? 'disabled' : '') . '>
-                            <i class="fas fa-minus"></i>
+                            <span>-</span>
                         </button>
                         <span class="quantity">' . (isset($_SESSION['panier'][$nom]) ? $_SESSION['panier'][$nom] : 0) . '</span>
                         <button type="submit" name="ajouter" class="quantity-btn" ' . ($currentStock <= 0 ? 'disabled' : '') . '>
-                            <i class="fas fa-plus"></i>
+                            <span>+</span>
                         </button>
                     </form>
                 </div>
