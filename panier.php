@@ -1,13 +1,15 @@
 <?php
 session_start();
+require_once 'config.php';
 
 // --- Affichage du panier ---
-$produits = [
-    ["nom" => "airpods", "prix" => 199,  "description" => "AirPods Apple sans fil",         "stock" => 10, "categorie" => "airpods"],
-    ["nom" => "iphone",  "prix" => 999,  "description" => "iPhone dernière génération",      "stock" => 5,  "categorie" => "iphone"],
-    ["nom" => "Macbook", "prix" => 1499, "description" => "Macbook Pro 16 pouces",           "stock" => 2,  "categorie" => "macbook"],
-    ["nom" => "ipad",    "prix" => 599,  "description" => "iPad 10,9 pouces dernière génération", "stock" => 7, "categorie" => "ipad"],
-];
+try {
+    $stmt = $pdo->query("SELECT * FROM produits");
+    $produits = $stmt->fetchAll();
+} catch(PDOException $e) {
+    echo "Erreur : " . $e->getMessage();
+    $produits = [];
+}
 
 // Affichage du panier
 $panier = $_SESSION['panier'] ?? [];

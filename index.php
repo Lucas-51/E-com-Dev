@@ -1,16 +1,17 @@
 <?php
 // index.php
 session_start();
+require_once 'config.php';
 include './includes/card.php'; // doit définir function createCard($nom,$prix,$desc,$stock): string
 
-// --- Données produits (tu peux enrichir/brancher BDD) ---
-$produits = [
-    ["nom" => "airpods", "prix" => 199,  "description" => "AirPods Apple sans fil",         "stock" => 10, "categorie" => "airpods"],
-    ["nom" => "iphone",  "prix" => 999,  "description" => "iPhone dernière génération",      "stock" => 5,  "categorie" => "iphone"],
-    ["nom" => "Macbook", "prix" => 1499, "description" => "Macbook Pro 16 pouces",           "stock" => 2,  "categorie" => "macbook"],
-    // exemple si tu veux en rajouter :
-    // ["nom" => "iPad", "prix" => 699, "description" => "iPad Air dernière génération.", "stock" => 4, "categorie" => "ipad"],
-];
+// Récupération des produits depuis la BDD
+try {
+    $stmt = $pdo->query("SELECT * FROM produits ORDER BY categorie");
+    $produits = $stmt->fetchAll();
+} catch(PDOException $e) {
+    echo "Erreur : " . $e->getMessage();
+    $produits = [];
+}
 
 // --- Panier ---
 if (!isset($_SESSION['panier'])) {
