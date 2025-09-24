@@ -89,13 +89,13 @@ $produitsFiltres = $catLabel
 </head>
 <body>
     <header>
-        <h1>Catégories de produits</h1>
-        <nav>
-            <a href="index.php">Accueil</a>
-            <a href="categorie.php">Catégories</a>
-            <a href="produit.php">Produit</a>
-            <a href="contact.php">Contact</a>
-            <a href="panier.php">Panier (<?php echo array_sum($_SESSION['panier']); ?>)</a>
+        <h1 style="text-align:center; margin-top: 0;">Catégories de produits</h1>
+        <nav style="display: flex; justify-content: center; gap: 40px; margin: 0 0 16px 0;">
+            <a href="index.php" style="font-weight:bold; color:#fff; text-decoration:none;">Accueil</a>
+            <a href="categorie.php" style="font-weight:bold; color:#fff; text-decoration:none;">Catégories</a>
+            <a href="produit.php" style="font-weight:bold; color:#fff; text-decoration:none;">Produit</a>
+            <a href="contact.php" style="font-weight:bold; color:#fff; text-decoration:none;">Contact</a>
+            <a href="panier.php" style="font-weight:bold; color:#fff; text-decoration:none;">Panier (<?php echo array_sum($_SESSION['panier']); ?>)</a>
         </nav>
     </header>
 
