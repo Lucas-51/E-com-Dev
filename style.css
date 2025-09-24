@@ -124,6 +124,7 @@
         border-radius: 20px;
         font-weight: 600;
         z-index: 10;
+        text-decoration: none !important;
     }
     @media (max-width: 820px) {
         .header-flex {

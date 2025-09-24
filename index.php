@@ -63,7 +63,7 @@ $panierCount = array_sum($_SESSION['panier']);
         .dropdown > a::after{content:"▾";margin-left:6px;font-size:.9em;opacity:.8}
 
         /* Bouton Sign in */
-        .sign-in-btn{background:#007bff;color:#fff!important;padding:8px 14px;border-radius:20px;font-weight:600}
+        .sign-in-btn{background:#007bff;color:#fff!important;padding:8px 14px;border-radius:20px;font-weight:600;text-decoration:none!important}
         .sign-in-btn:hover{background:#0056b3}
 
         @media (max-width:820px){
