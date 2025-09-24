@@ -36,6 +36,15 @@ if (isset($_POST['update_qte'])) {
     header('Location: panier.php');
     exit;
 }
+// --- Suppression d'un produit du panier ---
+if (isset($_POST['delete_prod'])) {
+    $nom = $_POST['nom'] ?? '';
+    if ($nom !== '' && isset($_SESSION['panier'][$nom])) {
+        unset($_SESSION['panier'][$nom]);
+    }
+    header('Location: panier.php');
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -65,12 +74,18 @@ if (isset($_POST['update_qte'])) {
                         <td><?php echo htmlspecialchars($prod['nom']); ?></td>
                         <td><?php echo htmlspecialchars($prod['prix']); ?>€</td>
                         <td>
-                            <input type="number" name="qte" value="<?php echo htmlspecialchars($prod['qte']); ?>" min="1" style="width:60px; text-align:center;">
-                            <input type="hidden" name="nom" value="<?php echo htmlspecialchars($prod['nom']); ?>">
+                            <form method="post" style="display:inline;">
+                                <input type="number" name="qte" value="<?php echo htmlspecialchars($prod['qte']); ?>" min="1" style="width:60px; text-align:center;">
+                                <input type="hidden" name="nom" value="<?php echo htmlspecialchars($prod['nom']); ?>">
                         </td>
                         <td><?php echo $prod['prix'] * $prod['qte']; ?>€</td>
-                        <td>
-                            <button type="submit" name="update_qte" style="background:#007bff;color:#fff;border:none;padding:6px 12px;border-radius:4px;cursor:pointer;">Mettre à jour</button>
+                        <td style="white-space:nowrap;">
+                                <button type="submit" name="update_qte" style="background:#007bff;color:#fff;border:none;padding:6px 12px;border-radius:4px;cursor:pointer;">Mettre à jour</button>
+                            </form>
+                            <form method="post" style="display:inline;">
+                                <input type="hidden" name="nom" value="<?php echo htmlspecialchars($prod['nom']); ?>">
+                                <button type="submit" name="delete_prod" style="background:#dc3545;color:#fff;border:none;padding:6px 12px;border-radius:4px;cursor:pointer;margin-left:5px;">Supprimer</button>
+                            </form>
                         </td>
                     </tr>
                     <?php $total += $prod['prix'] * $prod['qte']; ?>
