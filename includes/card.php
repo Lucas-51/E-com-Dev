@@ -1,7 +1,21 @@
 <?php
-function createCard($nom, $prix, $description, $stock) {
-    $currentStock = isset($_SESSION['panier'][$nom]) ? $stock - $_SESSION['panier'][$nom] : $stock;
+function createCard($nom, $prix, $description, $stock, $withQuantity = false) {
+    $currentStock = isset($_SESSION['panier_temp'][$nom]) ? $stock - $_SESSION['panier_temp'][$nom] : $stock;
     $stockClass = $currentStock <= 5 ? ($currentStock <= 0 ? 'stock-empty' : 'stock-low') : 'stock-available';
+    
+    $quantityBlock = '';
+    if ($withQuantity) {
+        $qte = isset($_SESSION['panier_temp'][$nom]) ? $_SESSION['panier_temp'][$nom] : 1;
+        $quantityBlock = '<div class="card-actions">
+            <div class="quantity-form" style="display:flex;align-items:center;gap:10px;">
+                <button type="button" class="quantity-btn" onclick="updateQuantity(this, -1)" ' . ($qte <= 1 ? 'disabled' : '') . '>-
+                </button>
+                <input type="number" name="qte" value="' . $qte . '" min="1" max="' . $currentStock . '" style="width:50px;text-align:center;" readonly>
+                <button type="button" class="quantity-btn" onclick="updateQuantity(this, 1)" ' . ($qte >= $currentStock ? 'disabled' : '') . '>+
+                </button>
+            </div>
+        </div>';
+    }
     
     return '
         <div class="card">
@@ -13,20 +27,30 @@ function createCard($nom, $prix, $description, $stock) {
                 <div class="stock-info ' . $stockClass . '">
                     ' . ($currentStock > 0 ? $currentStock . ' unités disponibles' : 'Rupture de stock') . '
                 </div>
-                <div class="card-actions">
-                    <form method="post" class="quantity-form">
-                        <input type="hidden" name="nom" value="' . htmlspecialchars($nom) . '">
-                        <button type="submit" name="retirer" class="quantity-btn" ' . ($currentStock >= $stock ? 'disabled' : '') . '>
-                            <span>-</span>
-                        </button>
-                        <span class="quantity">' . (isset($_SESSION['panier'][$nom]) ? $_SESSION['panier'][$nom] : 0) . '</span>
-                        <button type="submit" name="ajouter" class="quantity-btn" ' . ($currentStock <= 0 ? 'disabled' : '') . '>
-                            <span>+</span>
-                        </button>
-                    </form>
-                </div>
+                ' . $quantityBlock . '
             </div>
         </div>
     ';
 }
 ?>
+<script>
+function updateQuantity(btn, delta) {
+    const input = btn.parentNode.querySelector('input[name="qte"]');
+    let val = parseInt(input.value) + delta;
+    const min = parseInt(input.min);
+    const max = parseInt(input.max);
+    if (val < min) val = min;
+    if (val > max) val = max;
+    input.value = val;
+    // Désactive les boutons si limite atteinte
+    btn.parentNode.querySelectorAll('button').forEach(b => b.disabled = false);
+    if (val === min) btn.parentNode.querySelector('button:first-child').disabled = true;
+    if (val === max) btn.parentNode.querySelector('button:last-child').disabled = true;
+    // Met à jour l'input hidden du formulaire parent
+    const form = btn.closest('form');
+    if (form) {
+        const hiddenQte = form.querySelector('input.hidden-qte');
+        if (hiddenQte) hiddenQte.value = val;
+    }
+}
+</script>

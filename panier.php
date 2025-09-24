@@ -115,6 +115,9 @@ if (isset($_POST['delete_prod'])) {
                 </tr>
             </table>
             </form>
+            <form method="post" action="<?php echo isset($_SESSION['user_id']) ? 'valider_panier.php' : 'connexion.php?redirect=valider_panier.php'; ?>" style="text-align:center; margin-top:24px;">
+                <button type="submit" class="card-btn" style="background:#28a745;color:#fff;border:none;padding:12px 32px;border-radius:8px;font-size:1.2em;cursor:pointer;">Valider mon panier</button>
+            </form>
         <?php endif; ?>
         <div class="links">
             <a href="index.php">Retour à l'accueil</a>

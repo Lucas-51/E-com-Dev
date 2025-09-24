@@ -31,7 +31,8 @@ if (!isset($_SESSION['panier'])) {
 }
 if (isset($_POST['ajouter'])) {
     $nom = $_POST['nom'];
-    $_SESSION['panier'][$nom] = ($_SESSION['panier'][$nom] ?? 0) + 1;
+    $qte = isset($_POST['qte']) ? max(1, (int)$_POST['qte']) : 1;
+    $_SESSION['panier'][$nom] = ($_SESSION['panier'][$nom] ?? 0) + $qte;
 }
 if (isset($_POST['retirer'])) {
     $nom = $_POST['nom'];
@@ -110,8 +111,14 @@ $produitsFiltres = $catLabel
                         <?php foreach ($produitsFiltres as $p): ?>
                             <div style="display: flex; flex-direction: column; align-items: center;">
                                 <form method="post" style="width:100%; display:flex; flex-direction:column; align-items:center;">
-                                    <?php echo createCard($p["nom"], $p["prix"], $p["description"], $p["stock"]); ?>
+                                    <?php 
+                                    $withQuantity = in_array(strtolower($p["nom"]), ["iphone", "macbook", "airpods", "ipad"]);
+                                    echo createCard($p["nom"], $p["prix"], $p["description"], $p["stock"], $withQuantity); 
+                                    ?>
                                     <input type="hidden" name="nom" value="<?php echo htmlspecialchars($p["nom"]); ?>">
+                                    <?php if ($withQuantity): ?>
+                                        <input type="hidden" name="qte" value="1" class="hidden-qte">
+                                    <?php endif; ?>
                                     <button type="submit" name="ajouter" class="card-btn" style="margin-top:16px; width:80%; max-width:220px;">Ajouter au panier</button>
                                 </form>
                             </div>
