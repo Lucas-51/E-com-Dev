@@ -41,11 +41,11 @@
     .dropdown .dropdown-menu{position:static;box-shadow:none;border:1px solid rgba(255,255,255,.08);margin-top:6px}
 }
 .panier-container {
-    max-width: 700px;
+    max-width: 850px;
     margin: 60px auto;
     background: #fff;
-    border-radius: 18px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    border-radius: 22px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.10);
     padding: 48px 32px 40px 32px;
 }
 .panier-container h2 {
@@ -61,29 +61,55 @@
 }
 .panier-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     margin-bottom: 24px;
+    background: #fafbfc;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    overflow: hidden;
 }
 .panier-table th, .panier-table td {
-    border: 1px solid #e0e0e0;
-    padding: 12px 8px;
+    border: none;
+    padding: 16px 10px;
     text-align: center;
+    font-size: 1.1em;
 }
 .panier-table th {
-    background: #f5f5f5;
+    background: #f2f4f8;
+    font-weight: 700;
+    color: #222;
 }
-.panier-container .links {
-    text-align: center;
-    margin-top: 24px;
+.panier-table tr:not(:last-child) td {
+    border-bottom: 1px solid #e0e0e0;
 }
-.panier-container .links a {
+.panier-table tr:last-child th, .panier-table tr:last-child td {
+    background: #f7faff;
+    font-size: 1.2em;
+    font-weight: bold;
     color: #007bff;
-    text-decoration: none;
-    font-weight: 500;
-    margin: 0 8px;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
 }
-.panier-container .links a:hover {
-    text-decoration: underline;
+.panier-table input[type="number"] {
+    width: 60px;
+    text-align: center;
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid #bfc9d1;
+    font-size: 1em;
+}
+.panier-table button[type="submit"] {
+    margin: 0 4px;
+    min-width: 110px;
+    font-size: 1em;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,123,255,0.08);
+    transition: background 0.2s, box-shadow 0.2s;
+}
+.panier-table button[type="submit"]:hover {
+    filter: brightness(0.95);
+    box-shadow: 0 4px 16px rgba(0,123,255,0.12);
 }
 
 /* Styles spécifiques produit.php (complément card déjà présent) */
@@ -640,5 +666,51 @@
 .contact-container input[type="text"],
 .contact-container input[type="email"] {
     flex: 1;
+}
+
+/* Centrer et moderniser le bouton "Retour à l'accueil" sous le panier */
+.panier-container .links {
+    text-align: center;
+    margin-top: 32px;
+}
+.panier-container .links a {
+    display: inline-block;
+    background: #f2f4f8;
+    color: #007bff;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 12px 32px;
+    border-radius: 10px;
+    font-size: 1.15em;
+    box-shadow: 0 2px 8px rgba(0,123,255,0.06);
+    border: 1px solid #e0e6ed;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.panier-container .links a:hover {
+    background: #007bff;
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(0,123,255,0.13);
+    border-color: #007bff;
+}
+
+/* Restaure le style d'origine pour les liens de navigation principaux */
+nav.main-nav a {
+    background: none;
+    color: #fff;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 1em;
+    box-shadow: none;
+    border: none;
+    margin: 0 6px;
+    transition: color 0.2s, background 0.2s;
+}
+nav.main-nav a:hover {
+    color: #007bff;
+    background: rgba(255,255,255,.06);
+    box-shadow: none;
+    border: none;
 }
 
