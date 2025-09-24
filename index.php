@@ -54,22 +54,11 @@ $panierCount = array_sum($_SESSION['panier']);
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<header>
-    <div style="display: flex; flex-direction: column; align-items: center; position: relative;">
-        <!-- Suppression du logo dans le header -->
-        <h1 style="text-align: center; width: 100%; margin: 0;">Ma boutique en ligne</h1>
-        <?php if (empty($_SESSION['user_id'])): ?>
-            <div id="login-btn-container" style="position: absolute; right: 32px; top: 0;">
-                <a href="connexion.php" class="sign-in-btn">Connexion</a>
-            </div>
-        <?php else: ?>
-            <div style="position: absolute; right: 32px; top: 0; display: flex; align-items: center; gap: 10px;">
-                <span style="color: #007bff; font-weight: 600;">Bonjour, <?= htmlspecialchars($_SESSION['user_nom']) ?></span>
-                <a href="deconnexion.php" class="sign-in-btn" style="background:#dc3545;">Déconnexion</a>
-            </div>
-        <?php endif; ?>
-        <nav class="main-nav" style="width: 100%; margin-top: 20px;">
-            <ul style="display: flex; justify-content: center; align-items: center; gap: 40px; margin: 0; padding: 0; list-style: none; width: 100%;">
+<header class="main-header">
+    <div class="header-container">
+        <h1 class="brand-name">Luc & Luk Shop</h1>
+        <nav class="main-nav">
+            <ul class="nav-list">
                 <li><a href="index.php">Accueil</a></li>
                 <li class="dropdown" id="cat-dropdown">
                     <a href="categorie.php">Catégories</a>
@@ -84,6 +73,18 @@ $panierCount = array_sum($_SESSION['panier']);
                 <li><a href="panier.php">Panier (<?= $panierCount ?>)</a></li>
             </ul>
         </nav>
+        <div class="user-section">
+            <?php if (empty($_SESSION['user_id'])): ?>
+                <div class="login-container">
+                    <a href="connexion.php" class="sign-in-btn">Connexion</a>
+                </div>
+            <?php else: ?>
+                <div class="user-info">
+                    <span class="user-greeting">Bonjour, <?= htmlspecialchars($_SESSION['user_nom']) ?></span>
+                    <a href="deconnexion.php" class="sign-in-btn logout">Déconnexion</a>
+                </div>
+            <?php endif; ?>
+        </div>
     </div>
 </header>
 
