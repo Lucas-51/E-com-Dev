@@ -77,7 +77,16 @@ $panierCount = array_sum($_SESSION['panier']);
     <div style="display: flex; flex-direction: column; align-items: center; position: relative;">
         <!-- Suppression du logo dans le header -->
         <h1 style="text-align: center; width: 100%; margin: 0;">Ma boutique en ligne</h1>
-        <a href="inscription.php" class="sign-in-btn" style="position: absolute; right: 32px; top: 0;">Sign in</a>
+        <?php if (empty($_SESSION['user_id'])): ?>
+            <div id="login-btn-container" style="position: absolute; right: 32px; top: 0;">
+                <a href="connexion.php" class="sign-in-btn">Connexion</a>
+            </div>
+        <?php else: ?>
+            <div style="position: absolute; right: 32px; top: 0; display: flex; align-items: center; gap: 10px;">
+                <span style="color: #007bff; font-weight: 600;">Bonjour, <?= htmlspecialchars($_SESSION['user_nom']) ?></span>
+                <a href="deconnexion.php" class="sign-in-btn" style="background:#dc3545;">Déconnexion</a>
+            </div>
+        <?php endif; ?>
         <nav class="main-nav" style="width: 100%; margin-top: 20px;">
             <ul style="display: flex; justify-content: center; align-items: center; gap: 40px; margin: 0; padding: 0; list-style: none; width: 100%;">
                 <li><a href="index.php">Accueil</a></li>
@@ -107,6 +116,15 @@ $panierCount = array_sum($_SESSION['panier']);
     document.addEventListener('click', (e) => {
         if (!e.target.closest('#cat-dropdown')) dd && dd.classList.remove('open');
     });
+
+    // Afficher le lien S'inscrire sous le bouton Connexion
+    const showLoginBtn = document.getElementById('show-login');
+    const registerLink = document.getElementById('register-link');
+    if (showLoginBtn && registerLink) {
+        showLoginBtn.addEventListener('click', () => {
+            registerLink.style.display = registerLink.style.display === 'none' ? 'block' : 'none';
+        });
+    }
 </script>
 
 <main>
