@@ -41,6 +41,7 @@ $panierCount = array_sum($_SESSION['panier']);
     <title>Ma boutique en ligne</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
 <header>
@@ -70,7 +71,6 @@ $panierCount = array_sum($_SESSION['panier']);
                     </ul>
                 </li>
                 <li><a href="produit.php">Produit</a></li>
-                <li><a href="contact.php">Contact</a></li>
                 <li><a href="panier.php">Panier (<?= $panierCount ?>)</a></li>
             </ul>
         </nav>
@@ -104,5 +104,6 @@ $panierCount = array_sum($_SESSION['panier']);
         </div>
     </div>
 </main>
+<?php include 'includes/contact-bubble.php'; ?>
 </body>
 </html>
