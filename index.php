@@ -75,6 +75,7 @@ $panierCount = array_sum($_SESSION['panier']);
 <body>
 <header>
     <div style="display: flex; flex-direction: column; align-items: center; position: relative;">
+        <!-- Suppression du logo dans le header -->
         <h1 style="text-align: center; width: 100%; margin: 0;">Ma boutique en ligne</h1>
         <a href="inscription.php" class="sign-in-btn" style="position: absolute; right: 32px; top: 0;">Sign in</a>
         <nav class="main-nav" style="width: 100%; margin-top: 20px;">
@@ -109,20 +110,11 @@ $panierCount = array_sum($_SESSION['panier']);
 </script>
 
 <main>
-    <section class="produits">
-        <h2 style="text-align:center;">Nos produits</h2>
-        <div class="card-container">
-            <?php foreach ($produits as $p): ?>
-                <div style="display: flex; flex-direction: column; align-items: center;">
-                    <?php
-                        echo createCard($p["nom"], $p["prix"], $p["description"], $p["stock"]);
-                    ?>
-                </div>
-            <?php endforeach; ?>
+    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 60px;">
+        <div style="background: #fff; border-radius: 32px; box-shadow: 0 8px 32px rgba(0,0,0,0.10); padding: 32px 48px 24px 48px; display: flex; flex-direction: column; align-items: center;">
+            <img src="images/logo e-commerce.jpg" alt="Logo Lukluk & Lucas" style="max-width: 320px; width: 100%; height: auto; display: block;">
         </div>
-    </section>
-
-    <!-- Suppression de la section panier ici, elle est déplacée dans panier.php -->
+    </div>
 </main>
 </body>
 </html>
