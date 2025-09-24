@@ -42,6 +42,9 @@ $panierCount = array_sum($_SESSION['panier']);
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 <header>
@@ -98,11 +101,73 @@ $panierCount = array_sum($_SESSION['panier']);
 </script>
 
 <main>
-    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 60px;">
-        <div style="background: #fff; border-radius: 32px; box-shadow: 0 8px 32px rgba(0,0,0,0.10); padding: 32px 48px 24px 48px; display: flex; flex-direction: column; align-items: center;">
-            <img src="images/logo e-commerce.jpg" alt="Logo Lukluk & Lucas" style="max-width: 320px; width: 100%; height: auto; display: block;">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h2>Découvrez l'Excellence Technologique</h2>
+            <p>Les derniers produits Apple à prix compétitifs</p>
+            <div class="cta-buttons">
+                <a href="categorie.php" class="primary-button">
+                    <span>Explorer la Collection</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="offre_etudiants.php" class="secondary-button">
+                    <span>Offres Étudiants</span>
+                    <i class="fas fa-graduation-cap"></i>
+                </a>
+            </div>
         </div>
-    </div>
+        <div class="hero-image">
+            <img src="images/Macbook.jpg" alt="MacBook Pro" class="floating">
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="featured-products">
+        <h3>Produits Populaires</h3>
+        <div class="product-grid">
+            <?php
+            $featured = array_slice($produits, 0, 3);
+            foreach ($featured as $produit) {
+                echo createCard($produit['nom'], $produit['prix'], $produit['description'], $produit['stock']);
+            }
+            ?>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits-section">
+        <div class="benefit-card">
+            <i class="fas fa-truck"></i>
+            <h4>Livraison Gratuite</h4>
+            <p>Pour toute commande de plus de 1000€</p>
+        </div>
+        <div class="benefit-card">
+            <i class="fas fa-shield-alt"></i>
+            <h4>Garantie 2 Ans</h4>
+            <p>Sur tous nos produits</p>
+        </div>
+        <div class="benefit-card">
+            <i class="fas fa-sync"></i>
+            <h4>Retours Faciles</h4>
+            <p>Sous 30 jours</p>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter-section">
+        <div class="newsletter-content">
+            <h3>Restez Informé</h3>
+            <p>Recevez nos dernières offres et nouveautés en avant-première</p>
+            <form class="newsletter-form" action="newsletter-signup.php" method="POST">
+                <input type="email" name="email" placeholder="Votre adresse email" required>
+                <button type="submit" class="primary-button">
+                    <span>S'inscrire</span>
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </section>
 </main>
 <?php include 'includes/contact-bubble.php'; ?>
 </body>
