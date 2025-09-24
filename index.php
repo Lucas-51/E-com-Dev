@@ -20,12 +20,19 @@ if (!isset($_SESSION['panier'])) {
 if (isset($_POST['ajouter'])) {
     $nom = $_POST['nom'] ?? '';
     if ($nom !== '') {
-        $_SESSION['panier'][$nom] = ($_SESSION['panier'][$nom] ?? 0) + 1;
+        // Trouver le stock actuel du produit
+        $stmt = $pdo->prepare("SELECT stock FROM produits WHERE nom = ?");
+        $stmt->execute([$nom]);
+        $produit = $stmt->fetch();
+        
+        if ($produit && ($produit['stock'] > ($_SESSION['panier'][$nom] ?? 0))) {
+            $_SESSION['panier'][$nom] = ($_SESSION['panier'][$nom] ?? 0) + 1;
+        }
     }
 }
 if (isset($_POST['retirer'])) {
     $nom = $_POST['nom'] ?? '';
-    if (isset($_SESSION['panier'][$nom])) {
+    if (isset($_SESSION['panier'][$nom]) && $_SESSION['panier'][$nom] > 0) {
         $_SESSION['panier'][$nom]--;
         if ($_SESSION['panier'][$nom] <= 0) {
             unset($_SESSION['panier'][$nom]);

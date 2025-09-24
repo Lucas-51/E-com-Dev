@@ -507,6 +507,87 @@ body {
     background: #f8f9fa;
 }
 
+/* Stock and Quantity Styles */
+.stock-info {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.9em;
+    margin: 10px 0;
+    font-weight: 500;
+}
+
+.stock-available {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.stock-low {
+    background-color: #fff3e0;
+    color: #ef6c00;
+}
+
+.stock-empty {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.card-actions {
+    margin-top: 15px;
+    width: 100%;
+}
+
+.quantity-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.quantity-btn {
+    background: #f0f2f5;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.quantity-btn:not(:disabled):hover {
+    background: #e4e6e9;
+}
+
+.quantity-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.quantity-btn i {
+    color: #1a1a1a;
+    font-size: 0.9em;
+}
+
+.quantity {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #1a1a1a;
+    min-width: 30px;
+    text-align: center;
+}
+
+/* Card Modifications */
+.card {
+    position: relative;
+    overflow: hidden;
+}
+
+.card-body {
+    padding: 20px;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
     .hero-section {
