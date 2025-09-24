@@ -53,9 +53,17 @@ $produitsFiltres = $catLabel
 <body>
     <header>
         <h1 style="text-align:center; margin-top: 0;">Catégories de produits</h1>
-        <nav style="display: flex; justify-content: center; gap: 40px; margin: 0 0 16px 0;">
+        <nav class="main-nav" style="display: flex; justify-content: center; gap: 40px; margin: 0 0 16px 0;">
             <a href="index.php" style="font-weight:bold; color:#fff; text-decoration:none;">Accueil</a>
-            <a href="categorie.php" style="font-weight:bold; color:#fff; text-decoration:none;">Catégories</a>
+            <div class="dropdown">
+                <a href="categorie.php" style="font-weight:bold; color:#fff; text-decoration:none;">Catégories</a>
+                <div class="dropdown-menu">
+                    <a href="categorie.php?cat=iphone">iPhone</a>
+                    <a href="categorie.php?cat=macbook">Macbook</a>
+                    <a href="categorie.php?cat=airpods">AirPods</a>
+                    <a href="categorie.php?cat=ipad">iPad</a>
+                </div>
+            </div>
             <a href="produit.php" style="font-weight:bold; color:#fff; text-decoration:none;">Produit</a>
             <a href="contact.php" style="font-weight:bold; color:#fff; text-decoration:none;">Contact</a>
             <a href="panier.php" style="font-weight:bold; color:#fff; text-decoration:none;">Panier (<?php echo array_sum($_SESSION['panier']); ?>)</a>

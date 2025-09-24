@@ -26,15 +26,27 @@ foreach ($panier as $nom => $qte) {
 }
 
 // --- Gestion modification du panier ---
+$messageStock = '';
 if (isset($_POST['update_qte'])) {
     $nom = $_POST['nom'] ?? '';
     $qte = max(1, (int)($_POST['qte'] ?? 1));
-    if ($nom !== '' && isset($_SESSION['panier'][$nom])) {
-        $_SESSION['panier'][$nom] = $qte;
+    // Chercher le stock du produit
+    $stock = null;
+    foreach ($produits as $p) {
+        if ($p['nom'] === $nom) {
+            $stock = $p['stock'];
+            break;
+        }
     }
-    // Rafraîchir pour éviter le repost
-    header('Location: panier.php');
-    exit;
+    if ($nom !== '' && isset($_SESSION['panier'][$nom])) {
+        if ($stock !== null && $qte > $stock) {
+            $messageStock = "Pas assez de stock pour le produit '$nom' (stock disponible : $stock).";
+        } else {
+            $_SESSION['panier'][$nom] = $qte;
+            header('Location: panier.php');
+            exit;
+        }
+    }
 }
 // --- Suppression d'un produit du panier ---
 if (isset($_POST['delete_prod'])) {
@@ -56,6 +68,11 @@ if (isset($_POST['delete_prod'])) {
 <body>
     <div class="panier-container">
         <h2>Votre panier</h2>
+        <?php if (!empty($messageStock)): ?>
+            <div style="color:#dc3545; background:#ffeaea; border:1px solid #dc3545; padding:10px; border-radius:6px; margin-bottom:18px; text-align:center;">
+                <?php echo htmlspecialchars($messageStock); ?>
+            </div>
+        <?php endif; ?>
         <?php if (empty($produitsPanier)): ?>
             <p>Votre panier est vide.</p>
         <?php else: ?>
