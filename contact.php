@@ -18,7 +18,22 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <form>
+            <?php
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $nom = trim($_POST['nom'] ?? '');
+                $email = trim($_POST['email'] ?? '');
+                $message = trim($_POST['message'] ?? '');
+                $destinataire = 'lucascharle43@gmail.com'; // <-- À personnaliser
+                if ($nom && $email && $message) {
+                    $sujet = "Nouveau message de contact Luc & Luk Shop";
+                    $contenu = "Nom: $nom\nEmail: $email\nMessage:\n$message";
+                    $headers = "From: $email\r\nReply-To: $email\r\n";
+                    mail($destinataire, $sujet, $contenu, $headers);
+                    echo '<div style="color:#28a745; background:#eafaf1; border:2px solid #28a745; padding:18px; border-radius:12px; margin:24px auto; max-width:600px; text-align:center; font-size:1.1em;">Votre message a bien été envoyé !</div>';
+                }
+            }
+            ?>
+            <form method="post">
                 <div class="form-group">
                     <label for="nom">Nom :</label>
                     <input type="text" id="nom" name="nom" required>

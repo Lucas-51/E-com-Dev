@@ -72,8 +72,6 @@ $produitsFiltres = $catLabel
                     <a href="categorie.php?cat=ipad">iPad</a>
                 </div>
             </div>
-            <a href="produit.php" style="font-weight:bold; color:#fff; text-decoration:none;">Produit</a>
-            <a href="contact.php" style="font-weight:bold; color:#fff; text-decoration:none;">Contact</a>
             <a href="panier.php" style="font-weight:bold; color:#fff; text-decoration:none;">Panier (<?php echo array_sum($_SESSION['panier']); ?>)</a>
         </nav>
     </header>

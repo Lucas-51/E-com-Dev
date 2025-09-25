@@ -1,38 +1,18 @@
 <?php
 session_start();
 
+date_default_timezone_set('Europe/Paris');
+
 // Redirige si non connecté
 if (!isset($_SESSION['user_id'])) {
     header('Location: connexion.php?redirect=valider_panier.php');
     exit;
 }
 
-// Charger les infos utilisateur depuis la session
-$prenom = $_SESSION['user_nom'] ?? '';
-$email = '';
-
 require_once 'config.php';
-if (isset($_SESSION['user_id'])) {
-    $stmt = $pdo->prepare("SELECT email FROM users WHERE id = ?");
-    $stmt->execute([$_SESSION['user_id']]);
-    $row = $stmt->fetch();
-    if ($row) $email = $row['email'];
-}
 
-// Simuler une "base de données" d'historique d'achat en session
-if (!isset($_SESSION['historique'])) {
-    $_SESSION['historique'] = [];
-}
-
-// Simuler des infos utilisateur (à remplacer par un vrai système d'auth plus tard)
-if (!isset($_SESSION['prenom'])) $_SESSION['prenom'] = 'PrénomTest';
-if (!isset($_SESSION['email'])) $_SESSION['email'] = 'test@email.com';
-
-// Récupérer le panier actuel
+// Charger le panier
 $panier = $_SESSION['panier'] ?? [];
-
-// Charger les produits
-require_once 'config.php';
 try {
     $stmt = $pdo->query("SELECT * FROM produits");
     $produits = $stmt->fetchAll();
@@ -40,39 +20,15 @@ try {
     $produits = [];
 }
 
-// Contrôle du stock et génération de l'achat
+// Contrôle du stock
 $messageStock = '';
-$achat = [];
-$total = 0;
 foreach ($panier as $nom => $qte) {
     foreach ($produits as $p) {
-        if ($p['nom'] === $nom) {
-            if ($qte > $p['stock']) {
-                $messageStock .= "Pas assez de stock pour le produit '$nom' (stock disponible : {$p['stock']}).<br>";
-            } else {
-                $achat[] = [
-                    'nom' => $p['nom'],
-                    'prix' => $p['prix'],
-                    'qte' => $qte
-                ];
-                $total += $p['prix'] * $qte;
-                // Décrémenter le stock en base de données
-                $updateStock = $pdo->prepare("UPDATE produits SET stock = stock - ? WHERE nom = ? AND stock >= ?");
-                $updateStock->execute([$qte, $nom, $qte]);
-            }
+        if ($p['nom'] === $nom && $qte > $p['stock']) {
+            $messageStock .= "Pas assez de stock pour le produit '$nom' (stock disponible : {$p['stock']}).<br>";
         }
     }
 }
-date_default_timezone_set('Europe/Paris');
-if (!empty($achat)) {
-    $_SESSION['historique'][] = [
-        'date' => date('d/m/Y H:i:s'),
-        'produits' => $achat,
-        'total' => $total
-    ];
-    $_SESSION['panier'] = [];
-}
-
 if (!empty($messageStock)) {
     echo '<div style="color:#b71c1c; background:#fff4f4; border:2px solid #b71c1c; padding:32px 24px; border-radius:18px; margin:48px auto; max-width:700px; text-align:center; font-size:1.35em; box-shadow:0 2px 16px rgba(183,28,28,0.08);">
         <span style="display:block; margin-bottom:18px; font-weight:600; letter-spacing:0.5px;">' . $messageStock . '</span>
@@ -81,39 +37,92 @@ if (!empty($messageStock)) {
     exit;
 }
 
-// Affichage de l'historique
-$historique = $_SESSION['historique'];
+// Si le formulaire n'est pas soumis, afficher le formulaire
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Validation commande</title><link rel="stylesheet" href="style.css"></head><body>';
+    echo '<div class="panier-container" style="max-width:600px;">';
+    echo '<h2>Informations de livraison</h2>';
+    echo '<form method="post" style="display:flex;flex-direction:column;gap:18px;">';
+    echo '<input type="text" name="nom" placeholder="Nom" required style="padding:10px;font-size:1.1em;">';
+    echo '<input type="text" name="prenom" placeholder="Prénom" required style="padding:10px;font-size:1.1em;">';
+    echo '<input type="email" name="email" placeholder="Adresse mail" required style="padding:10px;font-size:1.1em;">';
+    echo '<input type="text" name="adresse" placeholder="Adresse d\'envoi" required style="padding:10px;font-size:1.1em;">';
+    echo '<input type="tel" name="tel" placeholder="Numéro de téléphone" required style="padding:10px;font-size:1.1em;">';
+    echo '<button type="submit" style="background:#28a745;color:#fff;border:none;padding:12px 32px;border-radius:8px;font-size:1.2em;cursor:pointer;">Enregistrer</button>';
+    echo '</form>';
+    echo '</div></body></html>';
+    exit;
+}
+
+// Vérification des champs
+$nom = trim($_POST['nom'] ?? '');
+$prenom = trim($_POST['prenom'] ?? '');
+$email = trim($_POST['email'] ?? '');
+$adresse = trim($_POST['adresse'] ?? '');
+$tel = trim($_POST['tel'] ?? '');
+if (!$nom || !$prenom || !$email || !$adresse || !$tel) {
+    echo '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Validation commande</title><link rel="stylesheet" href="style.css"></head><body>';
+    echo '<div class="panier-container" style="max-width:600px;">';
+    echo '<h2>Informations de livraison</h2>';
+    echo '<form method="post" style="display:flex;flex-direction:column;gap:18px;">';
+    echo '<input type="text" name="nom" placeholder="Nom" value="' . htmlspecialchars($nom) . '" required style="padding:10px;font-size:1.1em;">';
+    echo '<input type="text" name="prenom" placeholder="Prénom" value="' . htmlspecialchars($prenom) . '" required style="padding:10px;font-size:1.1em;">';
+    echo '<input type="email" name="email" placeholder="Adresse mail" value="' . htmlspecialchars($email) . '" required style="padding:10px;font-size:1.1em;">';
+    echo '<input type="text" name="adresse" placeholder="Adresse d\'envoi" value="' . htmlspecialchars($adresse) . '" required style="padding:10px;font-size:1.1em;">';
+    echo '<input type="tel" name="tel" placeholder="Numéro de téléphone" value="' . htmlspecialchars($tel) . '" required style="padding:10px;font-size:1.1em;">';
+    echo '<div style="color:#222; background:#fff4f4; border:2px solid #b71c1c; padding:18px; border-radius:12px; margin:12px 0; text-align:center; font-size:1.1em;">Veuillez remplir tous les champs.</div>';
+    echo '<button type="submit" style="background:#28a745;color:#fff;border:none;padding:12px 32px;border-radius:8px;font-size:1.2em;cursor:pointer;">Enregistrer</button>';
+    echo '</form>';
+    echo '</div></body></html>';
+    exit;
+}
+
+// Générer l'achat
+$achat = [];
+$total = 0;
+foreach ($panier as $nomProd => $qte) {
+    foreach ($produits as $p) {
+        if ($p['nom'] === $nomProd) {
+            $achat[] = [
+                'nom' => $p['nom'],
+                'prix' => $p['prix'],
+                'qte' => $qte
+            ];
+            $total += $p['prix'] * $qte;
+            // Décrémenter le stock
+            $updateStock = $pdo->prepare("UPDATE produits SET stock = stock - ? WHERE nom = ? AND stock >= ?");
+            $updateStock->execute([$qte, $nomProd, $qte]);
+        }
+    }
+}
+$_SESSION['historique'][] = [
+    'date' => date('d/m/Y H:i:s'),
+    'produits' => $achat,
+    'total' => $total
+];
+$_SESSION['panier'] = [];
+
+// Affichage récapitulatif
+echo '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Récapitulatif commande</title><link rel="stylesheet" href="style.css"></head><body>';
+echo '<div class="panier-container" style="max-width:700px;">';
+echo '<h2>Merci pour votre commande !</h2>';
+echo '<h3>Informations client</h3>';
+echo '<ul style="font-size:1.15em;line-height:2;">';
+echo '<li><strong>Nom :</strong> ' . htmlspecialchars($nom) . '</li>';
+echo '<li><strong>Prénom :</strong> ' . htmlspecialchars($prenom) . '</li>';
+echo '<li><strong>Email :</strong> ' . htmlspecialchars($email) . '</li>';
+echo '<li><strong>Adresse d\'envoi :</strong> ' . htmlspecialchars($adresse) . '</li>';
+echo '<li><strong>Téléphone :</strong> ' . htmlspecialchars($tel) . '</li>';
+echo '</ul>';
+echo '<h3>Votre commande</h3>';
+echo '<ul style="font-size:1.15em;line-height:2;">';
+foreach ($achat as $prod) {
+    echo '<li>' . htmlspecialchars($prod['nom']) . ' x ' . $prod['qte'] . ' — ' . ($prod['prix'] * $prod['qte']) . '€</li>';
+}
+echo '</ul>';
+echo '<div style="font-size:1.3em;font-weight:600;margin-top:18px;">Total : ' . $total . '€</div>';
+echo '<div class="links" style="margin-top:32px;"><a href="index.php">Retour à l\'accueil</a></div>';
+echo '</div>';
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Historique d'achat</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="panier-container">
-        <h2>Merci pour votre commande, <?php echo htmlspecialchars($prenom); ?> !</h2>
-        <p>Un récapitulatif a été envoyé à : <strong><?php echo htmlspecialchars($email); ?></strong></p>
-        <h3>Votre historique d'achat :</h3>
-        <?php if (empty($historique)): ?>
-            <p>Aucun achat effectué pour le moment.</p>
-        <?php else: ?>
-            <?php foreach (array_reverse($historique) as $commande): ?>
-                <div class="historique-block" style="margin-bottom:24px;">
-                    <div style="font-weight:bold;">Commande du <?php echo $commande['date']; ?></div>
-                    <ul>
-                        <?php foreach ($commande['produits'] as $prod): ?>
-                            <li><?php echo htmlspecialchars($prod['nom']); ?> x <?php echo $prod['qte']; ?> — <?php echo $prod['prix'] * $prod['qte']; ?>€</li>
-                        <?php endforeach; ?>
-                    </ul>
-                    <div>Total : <strong><?php echo $commande['total']; ?>€</strong></div>
-                </div>
-            <?php endforeach; ?>
-        <?php endif; ?>
-        <div class="links">
-            <a href="index.php">Retour à l'accueil</a>
-        </div>
-    </div>
 </body>
 </html>

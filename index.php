@@ -83,7 +83,6 @@ $panierCount = array_sum($_SESSION['panier']);
                         <li><a href="categorie.php?cat=airpods">AirPods</a></li>
                     </ul>
                 </li>
-                <li><a href="produit.php">Produit</a></li>
                 <li><a href="panier.php">Panier (<?= $panierCount ?>)</a></li>
             </ul>
         </nav>
@@ -133,10 +132,7 @@ $panierCount = array_sum($_SESSION['panier']);
                     <span>Explorer la Collection</span>
                     <i class="fas fa-arrow-right"></i>
                 </a>
-                <a href="offre_etudiants.php" class="secondary-button">
-                    <span>Offres Étudiants</span>
-                    <i class="fas fa-graduation-cap"></i>
-                </a>
+                <!-- Bouton Offres Étudiants supprimé -->
             </div>
         </div>
         <div class="hero-image">
