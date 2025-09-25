@@ -40,31 +40,45 @@ try {
     $produits = [];
 }
 
-// Générer l'achat et vider le panier
+// Contrôle du stock et génération de l'achat
+$messageStock = '';
 $achat = [];
 $total = 0;
 foreach ($panier as $nom => $qte) {
     foreach ($produits as $p) {
         if ($p['nom'] === $nom) {
-            $achat[] = [
-                'nom' => $p['nom'],
-                'prix' => $p['prix'],
-                'qte' => $qte
-            ];
-            $total += $p['prix'] * $qte;
-            // Décrémenter le stock en base de données
-            $updateStock = $pdo->prepare("UPDATE produits SET stock = stock - ? WHERE nom = ? AND stock >= ?");
-            $updateStock->execute([$qte, $nom, $qte]);
+            if ($qte > $p['stock']) {
+                $messageStock .= "Pas assez de stock pour le produit '$nom' (stock disponible : {$p['stock']}).<br>";
+            } else {
+                $achat[] = [
+                    'nom' => $p['nom'],
+                    'prix' => $p['prix'],
+                    'qte' => $qte
+                ];
+                $total += $p['prix'] * $qte;
+                // Décrémenter le stock en base de données
+                $updateStock = $pdo->prepare("UPDATE produits SET stock = stock - ? WHERE nom = ? AND stock >= ?");
+                $updateStock->execute([$qte, $nom, $qte]);
+            }
         }
     }
 }
+date_default_timezone_set('Europe/Paris');
 if (!empty($achat)) {
     $_SESSION['historique'][] = [
-        'date' => date('d/m/Y H:i'),
+        'date' => date('d/m/Y H:i:s'),
         'produits' => $achat,
         'total' => $total
     ];
     $_SESSION['panier'] = [];
+}
+
+if (!empty($messageStock)) {
+    echo '<div style="color:#b71c1c; background:#fff4f4; border:2px solid #b71c1c; padding:32px 24px; border-radius:18px; margin:48px auto; max-width:700px; text-align:center; font-size:1.35em; box-shadow:0 2px 16px rgba(183,28,28,0.08);">
+        <span style="display:block; margin-bottom:18px; font-weight:600; letter-spacing:0.5px;">' . $messageStock . '</span>
+        <a href="panier.php" style="display:inline-block; background:#b71c1c; color:#fff; font-weight:600; text-decoration:none; padding:12px 32px; border-radius:10px; font-size:1.1em; box-shadow:0 2px 8px rgba(183,28,28,0.10); transition:background 0.2s;">Retour au panier</a>
+    </div>';
+    exit;
 }
 
 // Affichage de l'historique
