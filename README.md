@@ -5,6 +5,8 @@
 - débeug le contactez-nous
 - ajouter le code postal
 - ajouter un historique de commande base de donnée
+- ajouter une notification quand le produit est envoyé dans le panier
+- Regarder les formulaires pour mieux faire 
 
 # E-com-Dev
 
