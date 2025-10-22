@@ -4,6 +4,7 @@
 - mettre à jour de bouton de mise à jour
 - débeug le contactez-nous
 - ajouter le code postal
+- ajouter un historique de commande base de donnée
 
 # E-com-Dev
 
