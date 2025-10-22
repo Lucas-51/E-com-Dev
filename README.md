@@ -13,8 +13,7 @@ Une petite boutique en ligne montrant :
 
 ## Prérequis
 
-- macOS (développé et testé sur MAMP)
-- MAMP / PHP (>= 7.4 recommandé)
+- MAMP / PHP 
 - MySQL
 
 ## Installation
