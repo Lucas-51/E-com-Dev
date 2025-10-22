@@ -171,21 +171,6 @@ $panierCount = array_sum($_SESSION['panier']);
             <p>Sous 30 jours</p>
         </div>
     </section>
-
-    <!-- Newsletter Section -->
-    <section class="newsletter-section">
-        <div class="newsletter-content">
-            <h3>Restez Informé</h3>
-            <p>Recevez nos dernières offres et nouveautés en avant-première</p>
-            <form class="newsletter-form" action="newsletter-signup.php" method="POST">
-                <input type="email" name="email" placeholder="Votre adresse email" required>
-                <button type="submit" class="primary-button">
-                    <span>S'inscrire</span>
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </form>
-        </div>
-    </section>
 </main>
 <?php include 'includes/contact-bubble.php'; ?>
 </body>
