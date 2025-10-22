@@ -29,10 +29,12 @@ try {
 if (!isset($_SESSION['panier'])) {
     $_SESSION['panier'] = [];
 }
+$notifAjout = false;
 if (isset($_POST['ajouter'])) {
     $nom = $_POST['nom'];
     $qte = isset($_POST['qte']) ? max(1, (int)$_POST['qte']) : 1;
     $_SESSION['panier'][$nom] = ($_SESSION['panier'][$nom] ?? 0) + $qte;
+    $notifAjout = true;
 }
 if (isset($_POST['retirer'])) {
     $nom = $_POST['nom'];
@@ -126,5 +128,22 @@ $produitsFiltres = $catLabel
             </section>
         <?php endif; ?>
     </main>
+<div id="notif-toast" style="display:none;position:fixed;top:32px;right:32px;z-index:9999;background:#28a745;color:#fff;padding:18px 32px;border-radius:8px;box-shadow:0 2px 12px rgba(40,167,69,0.15);font-size:1.15em;font-weight:500;transition:opacity 0.3s;">Produit ajouté au panier !</div>
+<script>
+// Affiche la notification si le produit a été ajouté (côté serveur)
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if ($notifAjout): ?>
+    const toast = document.getElementById('notif-toast');
+    if (toast) {
+        toast.style.display = 'block';
+        toast.style.opacity = '1';
+        setTimeout(function() {
+            toast.style.opacity = '0';
+            setTimeout(function() { toast.style.display = 'none'; }, 400);
+        }, 5000);
+    }
+    <?php endif; ?>
+});
+</script>
 </body>
 </html>

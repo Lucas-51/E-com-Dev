@@ -47,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo '<input type="text" name="prenom" placeholder="Prénom" required style="padding:10px;font-size:1.1em;">';
     echo '<input type="email" name="email" placeholder="Adresse mail" required style="padding:10px;font-size:1.1em;">';
     echo '<input type="text" name="adresse" placeholder="Adresse d\'envoi" required style="padding:10px;font-size:1.1em;">';
+    echo '<input type="text" name="code_postal" placeholder="Code postal" required style="padding:10px;font-size:1.1em;">';
     echo '<input type="tel" name="tel" placeholder="Numéro de téléphone" required style="padding:10px;font-size:1.1em;">';
     echo '<button type="submit" style="background:#28a745;color:#fff;border:none;padding:12px 32px;border-radius:8px;font-size:1.2em;cursor:pointer;">Enregistrer</button>';
     echo '</form>';
@@ -60,7 +61,8 @@ $prenom = trim($_POST['prenom'] ?? '');
 $email = trim($_POST['email'] ?? '');
 $adresse = trim($_POST['adresse'] ?? '');
 $tel = trim($_POST['tel'] ?? '');
-if (!$nom || !$prenom || !$email || !$adresse || !$tel) {
+ $code_postal = trim($_POST['code_postal'] ?? '');
+if (!$nom || !$prenom || !$email || !$adresse || !$code_postal || !$tel) {
     echo '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Validation commande</title><link rel="stylesheet" href="style.css"></head><body>';
     echo '<div class="panier-container" style="max-width:600px;">';
     echo '<h2>Informations de livraison</h2>';
@@ -69,6 +71,7 @@ if (!$nom || !$prenom || !$email || !$adresse || !$tel) {
     echo '<input type="text" name="prenom" placeholder="Prénom" value="' . htmlspecialchars($prenom) . '" required style="padding:10px;font-size:1.1em;">';
     echo '<input type="email" name="email" placeholder="Adresse mail" value="' . htmlspecialchars($email) . '" required style="padding:10px;font-size:1.1em;">';
     echo '<input type="text" name="adresse" placeholder="Adresse d\'envoi" value="' . htmlspecialchars($adresse) . '" required style="padding:10px;font-size:1.1em;">';
+    echo '<input type="text" name="code_postal" placeholder="Code postal" value="' . htmlspecialchars($code_postal) . '" required style="padding:10px;font-size:1.1em;">';
     echo '<input type="tel" name="tel" placeholder="Numéro de téléphone" value="' . htmlspecialchars($tel) . '" required style="padding:10px;font-size:1.1em;">';
     echo '<div style="color:#222; background:#fff4f4; border:2px solid #b71c1c; padding:18px; border-radius:12px; margin:12px 0; text-align:center; font-size:1.1em;">Veuillez remplir tous les champs.</div>';
     echo '<button type="submit" style="background:#28a745;color:#fff;border:none;padding:12px 32px;border-radius:8px;font-size:1.2em;cursor:pointer;">Enregistrer</button>';
@@ -112,6 +115,7 @@ echo '<li><strong>Nom :</strong> ' . htmlspecialchars($nom) . '</li>';
 echo '<li><strong>Prénom :</strong> ' . htmlspecialchars($prenom) . '</li>';
 echo '<li><strong>Email :</strong> ' . htmlspecialchars($email) . '</li>';
 echo '<li><strong>Adresse d\'envoi :</strong> ' . htmlspecialchars($adresse) . '</li>';
+echo '<li><strong>Code postal :</strong> ' . htmlspecialchars($code_postal) . '</li>';
 echo '<li><strong>Téléphone :</strong> ' . htmlspecialchars($tel) . '</li>';
 echo '</ul>';
 echo '<h3>Votre commande</h3>';

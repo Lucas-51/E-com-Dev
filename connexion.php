@@ -10,25 +10,23 @@ if (isset($_SESSION['user_id'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
+    $redirect = isset($_GET['redirect']) ? $_GET['redirect'] : 'index.php';
     if ($email && $password) {
         $stmt = $pdo->prepare("SELECT id, nom, password FROM users WHERE email = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch();
         if ($user && password_verify($password, $user['password'])) {
             require_once 'includes/panier_db.php';
-            
             // Sauvegarder le panier actuel si existe
             if (!empty($_SESSION['panier'])) {
                 sauvegarderPanier($pdo, $user['id'], $_SESSION['panier']);
             }
-            
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_nom'] = $user['nom'];
-            
             // Charger le panier sauvegardé
             $_SESSION['panier'] = chargerPanier($pdo, $user['id']);
-            
-            header('Location: index.php');
+            // Redirige vers la page demandée
+            header('Location: ' . $redirect);
             exit;
         } else {
             $message = "Email ou mot de passe incorrect.";
