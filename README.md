@@ -1,3 +1,10 @@
+# A faire 
+
+- ajouter un historique de commande 
+- mettre à jour de bouton de mise à jour
+- débeug le contactez-nous
+- ajouter le code postal
+
 # E-com-Dev
 
 Site e‑commerce de démonstration "Luc & Luk Shop" développé en PHP + PDO (MySQL) et HTML/CSS.
