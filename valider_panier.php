@@ -92,17 +92,53 @@ foreach ($panier as $nomProd => $qte) {
                 'qte' => $qte
             ];
             $total += $p['prix'] * $qte;
-            // Décrémenter le stock
-            $updateStock = $pdo->prepare("UPDATE produits SET stock = stock - ? WHERE nom = ? AND stock >= ?");
-            $updateStock->execute([$qte, $nomProd, $qte]);
+            // Ne pas décrémenter le stock ici : on le fera dans la transaction
         }
     }
 }
-$_SESSION['historique'][] = [
-    'date' => date('d/m/Y H:i:s'),
-    'produits' => $achat,
-    'total' => $total
-];
+
+// Insérer la commande en base (transactionnelle)
+try {
+    $pdo->beginTransaction();
+
+    // Verrouiller et décrémenter le stock pour chaque produit
+    $stockStmt = $pdo->prepare("SELECT stock FROM produits WHERE nom = ? FOR UPDATE");
+    $updateStock = $pdo->prepare("UPDATE produits SET stock = stock - ? WHERE nom = ? AND stock >= ?");
+    foreach ($achat as $item) {
+        $stockStmt->execute([$item['nom']]);
+        $row = $stockStmt->fetch();
+        if (!$row || $row['stock'] < $item['qte']) {
+            throw new Exception("Pas assez de stock pour le produit '" . $item['nom'] . "'.");
+        }
+        $updateStock->execute([$item['qte'], $item['nom'], $item['qte']]);
+    }
+
+    // Insérer la commande principale
+    $stmtOrder = $pdo->prepare("INSERT INTO commandes (user_id, date_commande, nom, prenom, email, adresse, code_postal, tel, total) VALUES (?, NOW(), ?, ?, ?, ?, ?, ?, ?)");
+    $stmtOrder->execute([$_SESSION['user_id'], $nom, $prenom, $email, $adresse, $code_postal, $tel, $total]);
+    $commande_id = $pdo->lastInsertId();
+
+    // Insérer les items de la commande
+    $stmtItem = $pdo->prepare("INSERT INTO commande_items (commande_id, produit_nom, prix, quantite) VALUES (?, ?, ?, ?)");
+    foreach ($achat as $item) {
+        $stmtItem->execute([$commande_id, $item['nom'], $item['prix'], $item['qte']]);
+    }
+
+    $pdo->commit();
+} catch (Exception $e) {
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+    echo '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Erreur commande</title><link rel="stylesheet" href="style.css"></head><body>';
+    echo '<div class="panier-container" style="max-width:700px;">';
+    echo '<h2>Erreur lors de la validation de la commande</h2>';
+    echo '<div style="color:#b71c1c; background:#fff4f4; border:2px solid #b71c1c; padding:18px; border-radius:12px;">' . htmlspecialchars($e->getMessage()) . '</div>';
+    echo '<div class="links" style="margin-top:24px;"><a href="panier.php">Retour au panier</a></div>';
+    echo '</div></body></html>';
+    exit;
+}
+
+// Vider le panier
 $_SESSION['panier'] = [];
 
 // Affichage récapitulatif
@@ -125,7 +161,7 @@ foreach ($achat as $prod) {
 }
 echo '</ul>';
 echo '<div style="font-size:1.3em;font-weight:600;margin-top:18px;">Total : ' . $total . '€</div>';
-echo '<div class="links" style="margin-top:32px;"><a href="index.php">Retour à l\'accueil</a></div>';
+echo '<div class="links" style="margin-top:32px;"><a href="index.php">Retour à l\'accueil</a> | <a href="historique.php">Voir mon historique de commandes</a></div>';
 echo '</div>';
 ?>
 </body>

@@ -93,8 +93,14 @@ $panierCount = array_sum($_SESSION['panier']);
                 </div>
             <?php else: ?>
                 <div class="user-info">
-                    <span class="user-greeting">Bonjour, <?= htmlspecialchars($_SESSION['user_nom']) ?></span>
-                    <a href="deconnexion.php" class="sign-in-btn logout">Déconnexion</a>
+                    <div class="dropdown" id="user-dropdown">
+                        <span class="user-greeting dropdown-trigger">Bonjour, <?= htmlspecialchars($_SESSION['user_nom']) ?> ▼</span>
+                        <ul class="dropdown-menu user-menu">
+                            <li><a href="mon_compte.php">Mon compte</a></li>
+                            <li><a href="historique.php">Historique</a></li>
+                            <li><a href="deconnexion.php" class="logout-link">Déconnexion</a></li>
+                        </ul>
+                    </div>
                 </div>
             <?php endif; ?>
         </div>
@@ -110,6 +116,23 @@ $panierCount = array_sum($_SESSION['panier']);
     document.addEventListener('click', (e) => {
         if (!e.target.closest('#cat-dropdown')) dd && dd.classList.remove('open');
     });
+
+    // Gestion du menu déroulant utilisateur
+    const userDropdown = document.getElementById('user-dropdown');
+    if (userDropdown) {
+        const trigger = userDropdown.querySelector('.dropdown-trigger');
+        trigger && trigger.addEventListener('click', (e) => {
+            e.preventDefault();
+            userDropdown.classList.toggle('open');
+        });
+        
+        // Fermer le menu si on clique ailleurs
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#user-dropdown')) {
+                userDropdown.classList.remove('open');
+            }
+        });
+    }
 
     // Afficher le lien S'inscrire sous le bouton Connexion
     const showLoginBtn = document.getElementById('show-login');

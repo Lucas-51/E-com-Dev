@@ -1,8 +1,6 @@
 # A faire 
 
-- ajouter un historique de commande 
 - débeug le contactez-nous
-- ajouter un historique de commande base de donnée
 
 # E-com-Dev
 

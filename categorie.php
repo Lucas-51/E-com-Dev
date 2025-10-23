@@ -75,6 +75,16 @@ $produitsFiltres = $catLabel
                 </div>
             </div>
             <a href="panier.php" style="font-weight:bold; color:#fff; text-decoration:none;">Panier (<?php echo array_sum($_SESSION['panier']); ?>)</a>
+            <?php if (!empty($_SESSION['user_id'])): ?>
+                <div class="dropdown" id="user-dropdown-cat" style="position:relative;display:inline-block;">
+                    <span class="dropdown-trigger" style="cursor:pointer;color:#fff;font-weight:bold;padding:8px 12px;border-radius:8px;"><?= htmlspecialchars($_SESSION['user_nom']) ?> ▼</span>
+                    <ul class="dropdown-menu user-menu" style="position:absolute;right:0;top:calc(100% + 8px);min-width:180px;background:#fff;border:1px solid #e0e0e0;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,0.15);padding:8px;display:none;z-index:1000;list-style:none;margin:0;">
+                        <li><a href="mon_compte.php" style="display:block;padding:12px 16px;color:#333;text-decoration:none;border-radius:8px;font-weight:500;">Mon compte</a></li>
+                        <li><a href="historique.php" style="display:block;padding:12px 16px;color:#333;text-decoration:none;border-radius:8px;font-weight:500;">Historique</a></li>
+                        <li><a href="deconnexion.php" style="display:block;padding:12px 16px;color:#dc3545;text-decoration:none;border-radius:8px;font-weight:500;">Déconnexion</a></li>
+                    </ul>
+                </div>
+            <?php endif; ?>
         </nav>
     </header>
 
@@ -143,6 +153,38 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     }
     <?php endif; ?>
+    
+    // Gestion du menu déroulant utilisateur
+    const userDropdown = document.getElementById('user-dropdown-cat');
+    if (userDropdown) {
+        const trigger = userDropdown.querySelector('.dropdown-trigger');
+        const menu = userDropdown.querySelector('.user-menu');
+        
+        trigger && trigger.addEventListener('click', (e) => {
+            e.preventDefault();
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        });
+        
+        // Fermer le menu si on clique ailleurs
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#user-dropdown-cat')) {
+                menu.style.display = 'none';
+            }
+        });
+        
+        // Hover effects
+        const menuLinks = menu.querySelectorAll('a');
+        menuLinks.forEach(link => {
+            link.addEventListener('mouseenter', () => {
+                link.style.backgroundColor = link.textContent.trim() === 'Déconnexion' ? '#ffeaea' : '#f8f9fa';
+                link.style.color = link.textContent.trim() === 'Déconnexion' ? '#dc3545' : '#007bff';
+            });
+            link.addEventListener('mouseleave', () => {
+                link.style.backgroundColor = 'transparent';
+                link.style.color = link.textContent.trim() === 'Déconnexion' ? '#dc3545' : '#333';
+            });
+        });
+    }
 });
 </script>
 </body>
