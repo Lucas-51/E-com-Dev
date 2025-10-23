@@ -129,7 +129,63 @@ $produitsFiltres = $catLabel
                                     <?php if ($withQuantity): ?>
                                         <input type="hidden" name="qte" value="1" class="hidden-qte">
                                     <?php endif; ?>
-                                    <button type="submit" name="ajouter" class="card-btn" style="margin-top:16px; width:80%; max-width:220px;">Ajouter au panier</button>
+                                    <button type="submit" name="ajouter" class="card-btn" style="margin-top:16px; margin-bottom:20px; width:80%; max-width:220px;">Ajouter au panier</button>
+                                    
+                                    <!-- Ajout des spécifications techniques -->
+                                    <div class="specs-container" style="width: 100%; padding: 20px; background: #f8f9fa; border-radius: 12px;">
+                                        <h3 style="text-align: center; margin-bottom: 20px; color: #333;">Caractéristiques techniques</h3>
+                                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                                            <?php
+                                            // Définition des spécifications selon le type de produit
+                                            $specs = [];
+                                            if (stripos($p["nom"], 'iphone') !== false) {
+                                                $specs = [
+                                                    "Écran" => "6.7\" Super Retina XDR OLED",
+                                                    "Processeur" => "Puce A17 Pro",
+                                                    "RAM" => "8 Go",
+                                                    "Stockage" => "256 Go",
+                                                    "Appareil photo" => "48 Mpx principal",
+                                                    "Batterie" => "4422 mAh"
+                                                ];
+                                            } elseif (stripos($p["nom"], 'macbook') !== false) {
+                                                $specs = [
+                                                    "Écran" => "14.2\" Liquid Retina XDR",
+                                                    "Processeur" => "Puce M3 Pro",
+                                                    "RAM" => "16 Go",
+                                                    "Stockage" => "512 Go SSD",
+                                                    "Graphique" => "GPU 14 cœurs",
+                                                    "Autonomie" => "Jusqu'à 18h"
+                                                ];
+                                            } elseif (stripos($p["nom"], 'ipad') !== false) {
+                                                $specs = [
+                                                    "Écran" => "11\" Liquid Retina",
+                                                    "Processeur" => "Puce M2",
+                                                    "RAM" => "8 Go",
+                                                    "Stockage" => "128 Go",
+                                                    "Appareil photo" => "12 Mpx",
+                                                    "Connectivité" => "Wi-Fi 6E"
+                                                ];
+                                            } elseif (stripos($p["nom"], 'airpods') !== false) {
+                                                $specs = [
+                                                    "Type" => "Écouteurs sans fil",
+                                                    "Puce" => "H2",
+                                                    "Autonomie" => "6h d'écoute",
+                                                    "Charge" => "Boîtier MagSafe",
+                                                    "Audio" => "Audio spatial",
+                                                    "Résistance" => "IPX4"
+                                                ];
+                                            }
+
+                                            // Affichage des spécifications
+                                            foreach ($specs as $key => $value):
+                                            ?>
+                                                <div style="display: flex; align-items: center; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">
+                                                    <span style="font-weight: 500; color: #666; width: 120px;"><?php echo htmlspecialchars($key); ?></span>
+                                                    <span style="color: #333;"><?php echo htmlspecialchars($value); ?></span>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
                                 </form>
                             </div>
                         <?php endforeach; ?>
