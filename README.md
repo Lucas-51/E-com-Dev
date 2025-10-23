@@ -76,6 +76,30 @@ CREATE TABLE paniers (
   UNIQUE KEY(user_id, produit_nom),
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+-- Table des commandes
+CREATE TABLE IF NOT EXISTS commandes (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    date_commande DATETIME NOT NULL,
+    nom VARCHAR(150) NOT NULL,
+    prenom VARCHAR(150) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    adresse TEXT NOT NULL,
+    code_postal VARCHAR(20) NOT NULL,
+    tel VARCHAR(50) NOT NULL,
+    total DECIMAL(10,2) NOT NULL,
+    INDEX (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Table des items de commande
+CREATE TABLE IF NOT EXISTS commande_items (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    commande_id INT UNSIGNED NOT NULL,
+    produit_nom VARCHAR(255) NOT NULL,
+    prix DECIMAL(10,2) NOT NULL,
+    quantite INT UNSIGNED NOT NULL,
+    FOREIGN KEY (commande_id) REFERENCES commandes(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ```
 
 Importer quelques produits de test (exemple) :
