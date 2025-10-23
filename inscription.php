@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $hash = password_hash($password, PASSWORD_DEFAULT);
             $stmt = $pdo->prepare("INSERT INTO users (nom, email, password) VALUES (?, ?, ?)");
             if ($stmt->execute([$nom, $email, $hash])) {
-                $message = "Inscription réussie. <a href='connexion.php'>Connectez-vous</a>";
+                $message = "Inscription réussie ! <a href='connexion.php' style='display:inline-block;background:#28a745;color:#fff;text-decoration:none;padding:8px 16px;border-radius:8px;font-weight:600;margin-left:8px;transition:background-color 0.3s ease;'>Connectez-vous</a>";
             } else {
                 $message = "Erreur lors de l'inscription.";
             }
@@ -52,9 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php if ($message): ?>
             <div class="message"><?= $message ?></div>
         <?php endif; ?>
-        <div class="links">
-            <a href="connexion.php">Déjà inscrit ?</a>
-            <a href="index.php">Retour à l'accueil</a>
+        <div class="links" style="text-align:center;margin-top:24px;">
+            <a href="connexion.php" style="display:inline-block;background:#007bff;color:#fff;text-decoration:none;padding:10px 20px;border-radius:8px;font-weight:600;margin:0 8px;transition:background-color 0.3s ease;">Déjà inscrit ?</a>
+            <a href="index.php" style="display:inline-block;background:#6c757d;color:#fff;text-decoration:none;padding:10px 20px;border-radius:8px;font-weight:600;margin:0 8px;transition:background-color 0.3s ease;">Retour à l'accueil</a>
         </div>
     </div>
 </body>

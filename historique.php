@@ -52,7 +52,7 @@ try {
                     <div style="font-size:0.95em;line-height:1.6;">
                         <?= htmlspecialchars($commande['nom'] . ' ' . $commande['prenom']) ?><br>
                         <?= htmlspecialchars($commande['adresse']) ?><br>
-                        <?= htmlspecialchars($commande['code_postal']) ?><br>
+                        <?= htmlspecialchars($commande['code_postal']) ?> <?= htmlspecialchars($commande['ville'] ?? '') ?><br>
                         <?= htmlspecialchars($commande['tel']) ?><br>
                         <?= htmlspecialchars($commande['email']) ?><br>
                     </div>

@@ -39,7 +39,37 @@ if (!empty($messageStock)) {
 
 // Si le formulaire n'est pas soumis, afficher le formulaire
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Validation commande</title><link rel="stylesheet" href="style.css"></head><body>';
+    echo '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Validation commande</title><link rel="stylesheet" href="style.css">
+    <style>
+        .ville-suggestions {
+            border: 1px solid #ddd;
+            border-top: none;
+            max-height: 200px;
+            overflow-y: auto;
+            background: white;
+            position: absolute;
+            width: 100%;
+            z-index: 1000;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .ville-suggestion {
+            padding: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+        }
+        .ville-suggestion:hover {
+            background-color: #f0f0f0;
+        }
+        .ville-suggestion:last-child {
+            border-bottom: none;
+        }
+        .field-container {
+            position: relative;
+        }
+    </style>
+    </head><body>';
     echo '<div class="panier-container" style="max-width:600px;">';
     echo '<h2>Informations de livraison</h2>';
     echo '<form method="post" style="display:flex;flex-direction:column;gap:18px;">';
@@ -47,10 +77,65 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo '<input type="text" name="prenom" placeholder="Prénom" required style="padding:10px;font-size:1.1em;">';
     echo '<input type="email" name="email" placeholder="Adresse mail" required style="padding:10px;font-size:1.1em;">';
     echo '<input type="text" name="adresse" placeholder="Adresse d\'envoi" required style="padding:10px;font-size:1.1em;">';
-    echo '<input type="text" name="code_postal" placeholder="Code postal" pattern="[0-9]{5}" maxlength="5" required style="padding:10px;font-size:1.1em;">';
+    echo '<input type="text" id="code_postal" name="code_postal" placeholder="Code postal" pattern="[0-9]{5}" maxlength="5" required style="padding:10px;font-size:1.1em;">';
+    echo '<div class="field-container">';
+    echo '<input type="text" id="ville" name="ville" placeholder="Ville" required style="padding:10px;font-size:1.1em;width:100%;box-sizing:border-box;" readonly>';
+    echo '<div id="ville-suggestions" class="ville-suggestions" style="display:none;"></div>';
+    echo '</div>';
     echo '<input type="tel" name="tel" placeholder="Numéro de téléphone" required style="padding:10px;font-size:1.1em;">';
     echo '<button type="submit" style="background:#28a745;color:#fff;border:none;padding:12px 32px;border-radius:8px;font-size:1.2em;cursor:pointer;">Enregistrer</button>';
     echo '</form>';
+    echo '<script>
+        const codePostalInput = document.getElementById("code_postal");
+        const villeInput = document.getElementById("ville");
+        const suggestionsList = document.getElementById("ville-suggestions");
+
+        codePostalInput.addEventListener("input", function() {
+            const codePostal = this.value;
+            
+            if (codePostal.length === 5) {
+                fetch("api_villes.php?code_postal=" + codePostal)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.villes.length > 0) {
+                            suggestionsList.innerHTML = "";
+                            data.villes.forEach(ville => {
+                                const div = document.createElement("div");
+                                div.className = "ville-suggestion";
+                                div.textContent = ville;
+                                div.addEventListener("click", function() {
+                                    villeInput.value = ville;
+                                    suggestionsList.style.display = "none";
+                                    villeInput.removeAttribute("readonly");
+                                });
+                                suggestionsList.appendChild(div);
+                            });
+                            suggestionsList.style.display = "block";
+                            villeInput.removeAttribute("readonly");
+                        } else {
+                            suggestionsList.style.display = "none";
+                            villeInput.value = "";
+                            villeInput.setAttribute("readonly", "readonly");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Erreur:", error);
+                        suggestionsList.style.display = "none";
+                    });
+            } else {
+                suggestionsList.style.display = "none";
+                villeInput.value = "";
+                villeInput.setAttribute("readonly", "readonly");
+            }
+        });
+
+        // Fermer les suggestions si on clique ailleurs
+        document.addEventListener("click", function(event) {
+            if (!event.target.closest(".field-container")) {
+                suggestionsList.style.display = "none";
+            }
+        });
+    </script>';
     echo '</div></body></html>';
     exit;
 }
@@ -60,10 +145,41 @@ $nom = trim($_POST['nom'] ?? '');
 $prenom = trim($_POST['prenom'] ?? '');
 $email = trim($_POST['email'] ?? '');
 $adresse = trim($_POST['adresse'] ?? '');
+$ville = trim($_POST['ville'] ?? '');
 $tel = trim($_POST['tel'] ?? '');
  $code_postal = trim($_POST['code_postal'] ?? '');
-if (!$nom || !$prenom || !$email || !$adresse || !$code_postal || !$tel) {
-    echo '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Validation commande</title><link rel="stylesheet" href="style.css"></head><body>';
+if (!$nom || !$prenom || !$email || !$adresse || !$ville || !$code_postal || !$tel) {
+    echo '<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Validation commande</title><link rel="stylesheet" href="style.css">
+    <style>
+        .ville-suggestions {
+            border: 1px solid #ddd;
+            border-top: none;
+            max-height: 200px;
+            overflow-y: auto;
+            background: white;
+            position: absolute;
+            width: 100%;
+            z-index: 1000;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .ville-suggestion {
+            padding: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+        }
+        .ville-suggestion:hover {
+            background-color: #f0f0f0;
+        }
+        .ville-suggestion:last-child {
+            border-bottom: none;
+        }
+        .field-container {
+            position: relative;
+        }
+    </style>
+    </head><body>';
     echo '<div class="panier-container" style="max-width:600px;">';
     echo '<h2>Informations de livraison</h2>';
     echo '<form method="post" style="display:flex;flex-direction:column;gap:18px;">';
@@ -71,11 +187,60 @@ if (!$nom || !$prenom || !$email || !$adresse || !$code_postal || !$tel) {
     echo '<input type="text" name="prenom" placeholder="Prénom" value="' . htmlspecialchars($prenom) . '" required style="padding:10px;font-size:1.1em;">';
     echo '<input type="email" name="email" placeholder="Adresse mail" value="' . htmlspecialchars($email) . '" required style="padding:10px;font-size:1.1em;">';
     echo '<input type="text" name="adresse" placeholder="Adresse d\'envoi" value="' . htmlspecialchars($adresse) . '" required style="padding:10px;font-size:1.1em;">';
-    echo '<input type="text" name="code_postal" placeholder="Code postal" value="' . htmlspecialchars($code_postal) . '" required style="padding:10px;font-size:1.1em;">';
+    echo '<input type="text" id="code_postal" name="code_postal" placeholder="Code postal" pattern="[0-9]{5}" maxlength="5" value="' . htmlspecialchars($code_postal) . '" required style="padding:10px;font-size:1.1em;">';
+    echo '<div class="field-container">';
+    echo '<input type="text" id="ville" name="ville" placeholder="Ville" value="' . htmlspecialchars($ville) . '" required style="padding:10px;font-size:1.1em;width:100%;box-sizing:border-box;">';
+    echo '<div id="ville-suggestions" class="ville-suggestions" style="display:none;"></div>';
+    echo '</div>';
     echo '<input type="tel" name="tel" placeholder="Numéro de téléphone" value="' . htmlspecialchars($tel) . '" required style="padding:10px;font-size:1.1em;">';
     echo '<div style="color:#222; background:#fff4f4; border:2px solid #b71c1c; padding:18px; border-radius:12px; margin:12px 0; text-align:center; font-size:1.1em;">Veuillez remplir tous les champs.</div>';
     echo '<button type="submit" style="background:#28a745;color:#fff;border:none;padding:12px 32px;border-radius:8px;font-size:1.2em;cursor:pointer;">Enregistrer</button>';
     echo '</form>';
+    echo '<script>
+        const codePostalInput = document.getElementById("code_postal");
+        const villeInput = document.getElementById("ville");
+        const suggestionsList = document.getElementById("ville-suggestions");
+
+        codePostalInput.addEventListener("input", function() {
+            const codePostal = this.value;
+            
+            if (codePostal.length === 5) {
+                fetch("api_villes.php?code_postal=" + codePostal)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.villes.length > 0) {
+                            suggestionsList.innerHTML = "";
+                            data.villes.forEach(ville => {
+                                const div = document.createElement("div");
+                                div.className = "ville-suggestion";
+                                div.textContent = ville;
+                                div.addEventListener("click", function() {
+                                    villeInput.value = ville;
+                                    suggestionsList.style.display = "none";
+                                });
+                                suggestionsList.appendChild(div);
+                            });
+                            suggestionsList.style.display = "block";
+                        } else {
+                            suggestionsList.style.display = "none";
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Erreur:", error);
+                        suggestionsList.style.display = "none";
+                    });
+            } else {
+                suggestionsList.style.display = "none";
+            }
+        });
+
+        // Fermer les suggestions si on clique ailleurs
+        document.addEventListener("click", function(event) {
+            if (!event.target.closest(".field-container")) {
+                suggestionsList.style.display = "none";
+            }
+        });
+    </script>';
     echo '</div></body></html>';
     exit;
 }
@@ -114,8 +279,8 @@ try {
     }
 
     // Insérer la commande principale
-    $stmtOrder = $pdo->prepare("INSERT INTO commandes (user_id, date_commande, nom, prenom, email, adresse, code_postal, tel, total) VALUES (?, NOW(), ?, ?, ?, ?, ?, ?, ?)");
-    $stmtOrder->execute([$_SESSION['user_id'], $nom, $prenom, $email, $adresse, $code_postal, $tel, $total]);
+    $stmtOrder = $pdo->prepare("INSERT INTO commandes (user_id, date_commande, nom, prenom, email, adresse, code_postal, ville, tel, total) VALUES (?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmtOrder->execute([$_SESSION['user_id'], $nom, $prenom, $email, $adresse, $code_postal, $ville, $tel, $total]);
     $commande_id = $pdo->lastInsertId();
 
     // Insérer les items de la commande
@@ -152,6 +317,7 @@ echo '<li><strong>Prénom :</strong> ' . htmlspecialchars($prenom) . '</li>';
 echo '<li><strong>Email :</strong> ' . htmlspecialchars($email) . '</li>';
 echo '<li><strong>Adresse d\'envoi :</strong> ' . htmlspecialchars($adresse) . '</li>';
 echo '<li><strong>Code postal :</strong> ' . htmlspecialchars($code_postal) . '</li>';
+echo '<li><strong>Ville :</strong> ' . htmlspecialchars($ville) . '</li>';
 echo '<li><strong>Téléphone :</strong> ' . htmlspecialchars($tel) . '</li>';
 echo '</ul>';
 echo '<h3>Votre commande</h3>';
@@ -161,7 +327,7 @@ foreach ($achat as $prod) {
 }
 echo '</ul>';
 echo '<div style="font-size:1.3em;font-weight:600;margin-top:18px;">Total : ' . $total . '€</div>';
-echo '<div class="links" style="margin-top:32px;"><a href="index.php">Retour à l\'accueil</a> | <a href="historique.php">Voir mon historique de commandes</a></div>';
+echo '<div class="links" style="margin-top:32px;text-align:center;"><a href="index.php" style="display:inline-block;background:#007bff;color:#fff;text-decoration:none;padding:14px 32px;border-radius:12px;font-weight:600;font-size:1.1em;transition:background-color 0.3s ease;box-shadow:0 4px 12px rgba(0,123,255,0.2);">← Retour à l\'accueil</a></div>';
 echo '</div>';
 ?>
 </body>
