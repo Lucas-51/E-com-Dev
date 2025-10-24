@@ -42,7 +42,7 @@
 }
 .panier-container {
     max-width: 850px;
-    margin: 60px auto;
+    margin: 140px auto 60px auto; /* 140px en haut pour compenser le header fixe */
     background: #fff;
     border-radius: 22px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.10);
@@ -119,7 +119,7 @@
 
 .contact-container {
     max-width: 400px;
-    margin: 60px auto;
+    margin: 140px auto 60px auto; /* 140px en haut pour compenser le header fixe */
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 4px 24px rgba(0,0,0,0.08);
@@ -306,6 +306,11 @@ body {
     background-color: #f8f9fa;
     margin: 0;
     padding: 0;
+}
+
+main {
+    margin-top: 100px; /* Espace sous le header fixe */
+    min-height: calc(100vh - 100px);
 }
 
 /* Header Styles */
@@ -753,7 +758,7 @@ body {
 }
 .inscription-container {
     max-width: 400px;
-    margin: 60px auto;
+    margin: 140px auto 60px auto; /* 140px en haut pour compenser le header fixe */
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 4px 24px rgba(0,0,0,0.08);
@@ -851,7 +856,7 @@ body {
 .breadcrumb a:hover { text-decoration: underline; }
 .connexion-container {
     max-width: 400px;
-    margin: 60px auto;
+    margin: 140px auto 60px auto; /* 140px en haut pour compenser le header fixe */
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 4px 24px rgba(0,0,0,0.08);
@@ -1193,4 +1198,36 @@ header, .main-nav {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* Styles pour les différents containers avec espacement pour header fixe */
+.historique-container {
+    max-width: 900px;
+    margin: 140px auto 60px auto !important; /* 140px en haut pour compenser le header fixe */
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 32px;
+}
+
+/* Style général pour tout contenu principal sans container spécifique */
+body > div:not([class*="header"]):not([class*="nav"]):not([class*="footer"]) {
+    margin-top: 140px !important;
+}
+
+/* Ajustement pour les sections dans main */
+section {
+    margin-top: 20px;
+}
+
+/* Fallback pour les pages sans container spécifique */
+.form-container, .content-wrapper {
+    margin: 140px auto 60px auto !important;
+    max-width: 800px;
+    padding: 32px;
+}
+
+/* Ajustement spécifique pour le breadcrumb */
+.breadcrumb {
+    margin-top: 20px;
 }

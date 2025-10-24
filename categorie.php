@@ -61,31 +61,43 @@ $produitsFiltres = $catLabel
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1 style="text-align:center; margin-top: 0;">Catégories de produits</h1>
-        <nav class="main-nav" style="display: flex; justify-content: center; gap: 40px; margin: 0 0 16px 0;">
-            <a href="index.php" style="font-weight:bold; color:#fff; text-decoration:none;">Accueil</a>
-            <div class="dropdown">
-                <a href="categorie.php" style="font-weight:bold; color:#fff; text-decoration:none;">Catégories</a>
-                <div class="dropdown-menu">
-                    <a href="categorie.php?cat=iphone">iPhone</a>
-                    <a href="categorie.php?cat=macbook">Macbook</a>
-                    <a href="categorie.php?cat=airpods">AirPods</a>
-                    <a href="categorie.php?cat=ipad">iPad</a>
-                </div>
+    <header class="main-header">
+        <div class="header-container">
+            <h1 class="brand-name">Catégories de produits</h1>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="index.php">Accueil</a></li>
+                    <li class="dropdown" id="cat-dropdown">
+                        <a href="categorie.php">Catégories</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="categorie.php?cat=iphone">iPhone</a></li>
+                            <li><a href="categorie.php?cat=ipad">iPad</a></li>
+                            <li><a href="categorie.php?cat=macbook">Macbook</a></li>
+                            <li><a href="categorie.php?cat=airpods">AirPods</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="panier.php">Panier (<?php echo array_sum($_SESSION['panier']); ?>)</a></li>
+                </ul>
+            </nav>
+            <div class="user-section">
+                <?php if (empty($_SESSION['user_id'])): ?>
+                    <div class="login-container">
+                        <a href="connexion.php" class="sign-in-btn">Connexion</a>
+                    </div>
+                <?php else: ?>
+                    <div class="user-info">
+                        <div class="dropdown" id="user-dropdown">
+                            <span class="user-greeting dropdown-trigger">Bonjour, <?= htmlspecialchars($_SESSION['user_nom']) ?> ▼</span>
+                            <ul class="dropdown-menu user-menu">
+                                <li><a href="mon_compte.php">Mon compte</a></li>
+                                <li><a href="historique.php">Historique</a></li>
+                                <li><a href="deconnexion.php" class="logout-link">Déconnexion</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
-            <a href="panier.php" style="font-weight:bold; color:#fff; text-decoration:none;">Panier (<?php echo array_sum($_SESSION['panier']); ?>)</a>
-            <?php if (!empty($_SESSION['user_id'])): ?>
-                <div class="dropdown" id="user-dropdown-cat" style="position:relative;display:inline-block;">
-                    <span class="dropdown-trigger" style="cursor:pointer;color:#fff;font-weight:bold;padding:8px 12px;border-radius:8px;"><?= htmlspecialchars($_SESSION['user_nom']) ?> ▼</span>
-                    <ul class="dropdown-menu user-menu" style="position:absolute;right:0;top:calc(100% + 8px);min-width:180px;background:#fff;border:1px solid #e0e0e0;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,0.15);padding:8px;display:none;z-index:1000;list-style:none;margin:0;">
-                        <li><a href="mon_compte.php" style="display:block;padding:12px 16px;color:#333;text-decoration:none;border-radius:8px;font-weight:500;">Mon compte</a></li>
-                        <li><a href="historique.php" style="display:block;padding:12px 16px;color:#333;text-decoration:none;border-radius:8px;font-weight:500;">Historique</a></li>
-                        <li><a href="deconnexion.php" style="display:block;padding:12px 16px;color:#dc3545;text-decoration:none;border-radius:8px;font-weight:500;">Déconnexion</a></li>
-                    </ul>
-                </div>
-            <?php endif; ?>
-        </nav>
+        </div>
     </header>
 
     <main>
@@ -113,7 +125,6 @@ $produitsFiltres = $catLabel
         <?php else: ?>
             <!-- Affiche les produits filtrés -->
             <section class="produits">
-                <h2 style="text-align:center;">Catégorie : <?php echo htmlspecialchars($catLabel); ?></h2>
                 <div class="card-container">
                     <?php if (empty($produitsFiltres)): ?>
                         <p style="text-align:center;">Aucun produit dans cette catégorie.</p>
@@ -210,35 +221,29 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     <?php endif; ?>
     
+    // Ouvrir/fermer le dropdown au clic (mobile)
+    const dd = document.getElementById('cat-dropdown');
+    dd && dd.addEventListener('click', (e) => {
+        if (e.target.closest('.dropdown > a')) { e.preventDefault(); dd.classList.toggle('open'); }
+    });
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#cat-dropdown')) dd && dd.classList.remove('open');
+    });
+
     // Gestion du menu déroulant utilisateur
-    const userDropdown = document.getElementById('user-dropdown-cat');
+    const userDropdown = document.getElementById('user-dropdown');
     if (userDropdown) {
         const trigger = userDropdown.querySelector('.dropdown-trigger');
-        const menu = userDropdown.querySelector('.user-menu');
-        
         trigger && trigger.addEventListener('click', (e) => {
             e.preventDefault();
-            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+            userDropdown.classList.toggle('open');
         });
         
         // Fermer le menu si on clique ailleurs
         document.addEventListener('click', (e) => {
-            if (!e.target.closest('#user-dropdown-cat')) {
-                menu.style.display = 'none';
+            if (!e.target.closest('#user-dropdown')) {
+                userDropdown.classList.remove('open');
             }
-        });
-        
-        // Hover effects
-        const menuLinks = menu.querySelectorAll('a');
-        menuLinks.forEach(link => {
-            link.addEventListener('mouseenter', () => {
-                link.style.backgroundColor = link.textContent.trim() === 'Déconnexion' ? '#ffeaea' : '#f8f9fa';
-                link.style.color = link.textContent.trim() === 'Déconnexion' ? '#dc3545' : '#007bff';
-            });
-            link.addEventListener('mouseleave', () => {
-                link.style.backgroundColor = 'transparent';
-                link.style.color = link.textContent.trim() === 'Déconnexion' ? '#dc3545' : '#333';
-            });
         });
     }
 });
