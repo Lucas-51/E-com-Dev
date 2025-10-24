@@ -78,63 +78,128 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo '<input type="email" name="email" placeholder="Adresse mail" required style="padding:10px;font-size:1.1em;">';
     echo '<input type="text" name="adresse" placeholder="Adresse d\'envoi" required style="padding:10px;font-size:1.1em;">';
     echo '<input type="text" id="code_postal" name="code_postal" placeholder="Code postal" pattern="[0-9]{5}" maxlength="5" required style="padding:10px;font-size:1.1em;">';
-    echo '<div class="field-container">';
-    echo '<input type="text" id="ville" name="ville" placeholder="Ville" required style="padding:10px;font-size:1.1em;width:100%;box-sizing:border-box;" readonly>';
-    echo '<div id="ville-suggestions" class="ville-suggestions" style="display:none;"></div>';
+    echo '<div class="field-container" style="margin-bottom:10px;">';
+    echo '<select id="ville" name="ville" required style="padding:10px;font-size:1.1em;width:100%;box-sizing:border-box;border-radius:4px;border:1px solid #ddd;" disabled>';
+    echo '<option value="">Sélectionnez une ville</option>';
+    echo '</select>';
     echo '</div>';
     echo '<input type="tel" name="tel" placeholder="Numéro de téléphone" required style="padding:10px;font-size:1.1em;">';
     echo '<button type="submit" style="background:#28a745;color:#fff;border:none;padding:12px 32px;border-radius:8px;font-size:1.2em;cursor:pointer;">Enregistrer</button>';
     echo '</form>';
     echo '<script>
         const codePostalInput = document.getElementById("code_postal");
-        const villeInput = document.getElementById("ville");
-        const suggestionsList = document.getElementById("ville-suggestions");
+        const villeSelect = document.getElementById("ville");
+        let timeoutId = null;
 
-        codePostalInput.addEventListener("input", function() {
-            const codePostal = this.value;
-            
+        async function chargerVilles(codePostal) {
+            try {
+                if (codePostal.length !== 5) {
+                    villeSelect.innerHTML = "<option value=\'\'>Sélectionnez une ville</option>";
+                    villeSelect.disabled = true;
+                    return;
+                }
+
+                villeSelect.innerHTML = "<option value=\'\'>Chargement...</option>";
+                villeSelect.disabled = true;
+
+                const response = await fetch(`api_villes.php?code_postal=${codePostal}`);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || "Erreur lors de la requête");
+                }
+
+                villeSelect.innerHTML = "<option value=\'\'>Sélectionnez une ville</option>";
+
+                if (data.success && Array.isArray(data.villes) && data.villes.length > 0) {
+                    data.villes.forEach(ville => {
+                        const option = document.createElement("option");
+                        option.value = ville;
+                        option.textContent = ville;
+                        villeSelect.appendChild(option);
+                    });
+                    villeSelect.disabled = false;
+
+                    const previousValue = "' . htmlspecialchars($ville) . '";
+                    if (previousValue && data.villes.includes(previousValue)) {
+                        villeSelect.value = previousValue;
+                    }
+                } else {
+                    villeSelect.innerHTML = "<option value=\'\'>Aucune ville trouvée</option>";
+                    villeSelect.disabled = true;
+                }
+            } catch (error) {
+                console.error("Erreur:", error);
+                villeSelect.innerHTML = "<option value=\'\'>Erreur de chargement</option>";
+                villeSelect.disabled = true;
+            }
+        }
+
+        // Utiliser un debounce pour éviter trop d\'appels API
+        function debounce(codePostal) {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => chargerVilles(codePostal), 300);
+        }
+
+        codePostalInput.addEventListener("input", (e) => debounce(e.target.value));
+
+        // Charger les villes au chargement si un code postal est déjà présent
+        if (codePostalInput.value.length === 5) {
+            chargerVilles(codePostalInput.value);
+        }
+    </script>';
+    echo '</form>';
+    echo '<script>
+        const codePostalInput = document.getElementById("code_postal");
+        const villeSelect = document.getElementById("ville");
+
+        function chargerVilles(codePostal) {
             if (codePostal.length === 5) {
-                fetch("api_villes.php?code_postal=" + codePostal)
+                // Réinitialiser et désactiver le select pendant le chargement
+                villeSelect.innerHTML = "<option value=\'\'>Chargement...</option>";
+                villeSelect.disabled = true;
+
+                fetch(`api_villes.php?code_postal=${codePostal}`)
                     .then(response => response.json())
                     .then(data => {
-                        if (data.success && data.villes.length > 0) {
-                            suggestionsList.innerHTML = "";
+                        // Réinitialiser le select
+                        villeSelect.innerHTML = "<option value=\'\'>Sélectionnez une ville</option>";
+                        
+                        if (data.success && data.villes && data.villes.length > 0) {
+                            // Ajouter les options
                             data.villes.forEach(ville => {
-                                const div = document.createElement("div");
-                                div.className = "ville-suggestion";
-                                div.textContent = ville;
-                                div.addEventListener("click", function() {
-                                    villeInput.value = ville;
-                                    suggestionsList.style.display = "none";
-                                    villeInput.removeAttribute("readonly");
-                                });
-                                suggestionsList.appendChild(div);
+                                const option = document.createElement("option");
+                                option.value = ville;
+                                option.textContent = ville;
+                                villeSelect.appendChild(option);
                             });
-                            suggestionsList.style.display = "block";
-                            villeInput.removeAttribute("readonly");
+                            villeSelect.disabled = false;
                         } else {
-                            suggestionsList.style.display = "none";
-                            villeInput.value = "";
-                            villeInput.setAttribute("readonly", "readonly");
+                            villeSelect.innerHTML = "<option value=\'\'>Aucune ville trouvée</option>";
+                            villeSelect.disabled = true;
                         }
                     })
                     .catch(error => {
                         console.error("Erreur:", error);
-                        suggestionsList.style.display = "none";
+                        villeSelect.innerHTML = "<option value=\'\'>Erreur de chargement</option>";
+                        villeSelect.disabled = true;
                     });
             } else {
-                suggestionsList.style.display = "none";
-                villeInput.value = "";
-                villeInput.setAttribute("readonly", "readonly");
+                // Réinitialiser si le code postal n\'est pas complet
+                villeSelect.innerHTML = "<option value=\'\'>Sélectionnez une ville</option>";
+                villeSelect.disabled = true;
             }
+        }
+
+        // Écouter les changements du code postal
+        codePostalInput.addEventListener("input", function() {
+            chargerVilles(this.value);
         });
 
-        // Fermer les suggestions si on clique ailleurs
-        document.addEventListener("click", function(event) {
-            if (!event.target.closest(".field-container")) {
-                suggestionsList.style.display = "none";
-            }
-        });
+        // Charger les villes au chargement si un code postal est déjà présent
+        if (codePostalInput.value.length === 5) {
+            chargerVilles(codePostalInput.value);
+        }
     </script>';
     echo '</div></body></html>';
     exit;
@@ -189,8 +254,9 @@ if (!$nom || !$prenom || !$email || !$adresse || !$ville || !$code_postal || !$t
     echo '<input type="text" name="adresse" placeholder="Adresse d\'envoi" value="' . htmlspecialchars($adresse) . '" required style="padding:10px;font-size:1.1em;">';
     echo '<input type="text" id="code_postal" name="code_postal" placeholder="Code postal" pattern="[0-9]{5}" maxlength="5" value="' . htmlspecialchars($code_postal) . '" required style="padding:10px;font-size:1.1em;">';
     echo '<div class="field-container">';
-    echo '<input type="text" id="ville" name="ville" placeholder="Ville" value="' . htmlspecialchars($ville) . '" required style="padding:10px;font-size:1.1em;width:100%;box-sizing:border-box;">';
-    echo '<div id="ville-suggestions" class="ville-suggestions" style="display:none;"></div>';
+    echo '<select id="ville" name="ville" required style="padding:10px;font-size:1.1em;width:100%;box-sizing:border-box;" disabled>';
+    echo '<option value="">Sélectionnez une ville</option>';
+    echo '</select>';
     echo '</div>';
     echo '<input type="tel" name="tel" placeholder="Numéro de téléphone" value="' . htmlspecialchars($tel) . '" required style="padding:10px;font-size:1.1em;">';
     echo '<div style="color:#222; background:#fff4f4; border:2px solid #b71c1c; padding:18px; border-radius:12px; margin:12px 0; text-align:center; font-size:1.1em;">Veuillez remplir tous les champs.</div>';
@@ -198,48 +264,68 @@ if (!$nom || !$prenom || !$email || !$adresse || !$ville || !$code_postal || !$t
     echo '</form>';
     echo '<script>
         const codePostalInput = document.getElementById("code_postal");
-        const villeInput = document.getElementById("ville");
-        const suggestionsList = document.getElementById("ville-suggestions");
+        const villeSelect = document.getElementById("ville");
 
-        codePostalInput.addEventListener("input", function() {
-            const codePostal = this.value;
-            
+        function chargerVilles(codePostal) {
             if (codePostal.length === 5) {
-                fetch("api_villes.php?code_postal=" + codePostal)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success && data.villes.length > 0) {
-                            suggestionsList.innerHTML = "";
+                // Réinitialiser et désactiver le select pendant le chargement
+                villeSelect.innerHTML = "<option value=\'\'>Chargement...</option>";
+                villeSelect.disabled = true;
+
+                fetch(`api_villes.php?code_postal=${codePostal}`)
+                    .then(response => {
+                        console.log("Statut de la réponse:", response.status);
+                        return response.text();
+                    })
+                    .then(text => {
+                        console.log("Réponse brute:", text);
+                        const data = JSON.parse(text);
+                        console.log("Données analysées:", data);
+                        
+                        // Réinitialiser le select
+                        villeSelect.innerHTML = "<option value=\'\'>Sélectionnez une ville</option>";
+                        
+                        if (data.success && data.villes && data.villes.length > 0) {
+                            // Ajouter les options
                             data.villes.forEach(ville => {
-                                const div = document.createElement("div");
-                                div.className = "ville-suggestion";
-                                div.textContent = ville;
-                                div.addEventListener("click", function() {
-                                    villeInput.value = ville;
-                                    suggestionsList.style.display = "none";
-                                });
-                                suggestionsList.appendChild(div);
+                                const option = document.createElement("option");
+                                option.value = ville;
+                                option.textContent = ville;
+                                villeSelect.appendChild(option);
                             });
-                            suggestionsList.style.display = "block";
+                            villeSelect.disabled = false;
+                            
+                            // Si une ville était précédemment sélectionnée, la resélectionner
+                            const previousValue = "' . htmlspecialchars($ville) . '";
+                            if (previousValue && data.villes.includes(previousValue)) {
+                                villeSelect.value = previousValue;
+                            }
                         } else {
-                            suggestionsList.style.display = "none";
+                            villeSelect.innerHTML = "<option value=\'\'>Aucune ville trouvée</option>";
+                            villeSelect.disabled = true;
                         }
                     })
                     .catch(error => {
-                        console.error("Erreur:", error);
-                        suggestionsList.style.display = "none";
+                        console.error("Erreur détaillée:", error);
+                        villeSelect.innerHTML = "<option value=\'\'>Erreur de chargement</option>";
+                        villeSelect.disabled = true;
                     });
             } else {
-                suggestionsList.style.display = "none";
+                // Réinitialiser si le code postal n\'est pas complet
+                villeSelect.innerHTML = "<option value=\'\'>Sélectionnez une ville</option>";
+                villeSelect.disabled = true;
             }
+        }
+
+        // Écouter les changements du code postal
+        codePostalInput.addEventListener("input", function() {
+            chargerVilles(this.value);
         });
 
-        // Fermer les suggestions si on clique ailleurs
-        document.addEventListener("click", function(event) {
-            if (!event.target.closest(".field-container")) {
-                suggestionsList.style.display = "none";
-            }
-        });
+        // Charger les villes au chargement si un code postal est déjà présent
+        if (codePostalInput.value.length === 5) {
+            chargerVilles(codePostalInput.value);
+        }
     </script>';
     echo '</div></body></html>';
     exit;

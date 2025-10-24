@@ -1,40 +1,39 @@
 <?php
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+header("Content-Type: application/json; charset=utf-8");
+header("Access-Control-Allow-Origin: *");
 
-// API pour récupérer les villes en fonction du code postal depuis la base de données
-if (!isset($_GET['code_postal']) || strlen($_GET['code_postal']) != 5) {
-    echo json_encode(['error' => 'Code postal invalide']);
-    exit;
+if (!isset($_GET["code_postal"]) || !preg_match("/^\d{5}$/", $_GET["code_postal"])) {
+    die(json_encode(array("success" => false, "message" => "Code postal invalide")));
 }
 
-$code_postal = $_GET['code_postal'];
+$code_postal = $_GET["code_postal"];
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, "https://geo.api.gouv.fr/communes?codePostal=" . urlencode($code_postal));
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0");
+$response = curl_exec($ch);
+$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+curl_close($ch);
 
-// Inclure la configuration de la base de données
-require_once 'config.php';
+if ($http_code !== 200) {
+    die(json_encode(array("success" => false, "message" => "Erreur API")));
+}
 
-try {
-    // Requête pour récupérer les villes correspondant au code postal
-    $stmt = $pdo->prepare("SELECT nom_ville FROM villes WHERE code_postal = ? ORDER BY nom_ville");
-    $stmt->execute([$code_postal]);
-    $villes = $stmt->fetchAll(PDO::FETCH_COLUMN);
-    
-    if (!empty($villes)) {
-        echo json_encode([
-            'success' => true,
-            'code_postal' => $code_postal,
-            'villes' => $villes
-        ]);
-    } else {
-        echo json_encode([
-            'success' => false,
-            'message' => 'Aucune ville trouvée pour ce code postal'
-        ]);
+$data = json_decode($response, true);
+if (!is_array($data)) {
+    die(json_encode(array("success" => false, "message" => "Réponse invalide")));
+}
+
+$villes = array();
+foreach ($data as $commune) {
+    if (isset($commune["nom"])) {
+        $villes[] = $commune["nom"];
     }
-} catch (PDOException $e) {
-    echo json_encode([
-        'error' => 'Erreur de base de données',
-        'message' => $e->getMessage()
-    ]);
 }
-?>
+
+if (empty($villes)) {
+    die(json_encode(array("success" => false, "message" => "Aucune ville trouvée")));
+}
+
+sort($villes);
+die(json_encode(array("success" => true, "code_postal" => $code_postal, "villes" => $villes)));
