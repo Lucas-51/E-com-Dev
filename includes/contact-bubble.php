@@ -39,24 +39,53 @@ function submitContactForm(event) {
     event.preventDefault();
     const form = event.target;
     const formData = new FormData(form);
+    const submitBtn = form.querySelector('.submit-btn');
+    
+    // Désactiver le bouton pendant l'envoi
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...';
 
     fetch('process_contact.php', {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erreur réseau: ' + response.status);
+        }
+        // Vérifier si la réponse est du JSON valide
+        return response.text().then(text => {
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                console.error('Réponse reçue:', text);
+                throw new Error('Réponse invalide du serveur');
+            }
+        });
+    })
     .then(data => {
         if (data.success) {
-            alert('Message envoyé avec succès!');
+            alert(data.message || 'Message envoyé avec succès!');
             form.reset();
             toggleContactForm();
         } else {
-            alert('Une erreur est survenue. Veuillez réessayer.');
+            if (data.redirect) {
+                if (confirm(data.message + ' Voulez-vous vous connecter maintenant ?')) {
+                    window.location.href = data.redirect;
+                }
+            } else {
+                alert(data.message || 'Une erreur est survenue. Veuillez réessayer.');
+            }
         }
     })
     .catch(error => {
-        console.error('Error:', error);
-        alert('Une erreur est survenue. Veuillez réessayer.');
+        console.error('Erreur détaillée:', error);
+        alert('Erreur de connexion: ' + error.message);
+    })
+    .finally(() => {
+        // Réactiver le bouton
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer';
     });
 }
 </script>

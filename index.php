@@ -15,6 +15,22 @@ try {
 
 require_once 'includes/panier_db.php';
 
+// Récupérer le rôle de l'utilisateur si connecté
+$userRole = null;
+$unreadMessages = 0;
+if (isset($_SESSION['user_id'])) {
+    $stmt = $pdo->prepare("SELECT role FROM users WHERE id = ?");
+    $stmt->execute([$_SESSION['user_id']]);
+    $user = $stmt->fetch();
+    $userRole = $user['role'] ?? null;
+    
+    // Si admin, compter les messages non lus
+    if ($userRole === 'admin') {
+        $stmt = $pdo->query("SELECT COUNT(*) FROM messages_contact WHERE lu = FALSE");
+        $unreadMessages = $stmt->fetchColumn();
+    }
+}
+
 // --- Panier ---
 if (!isset($_SESSION['panier'])) {
     $_SESSION['panier'] = isset($_SESSION['user_id']) ? chargerPanier($pdo, $_SESSION['user_id']) : [];
@@ -98,6 +114,16 @@ $panierCount = array_sum($_SESSION['panier']);
                         <ul class="dropdown-menu user-menu">
                             <li><a href="mon_compte.php">Mon compte</a></li>
                             <li><a href="historique.php">Historique</a></li>
+                            <?php if ($userRole === 'admin'): ?>
+                                <li><a href="admin_messages.php" style="color: #007bff; font-weight: bold;">
+                                    <i class="fas fa-cog"></i> Administration 
+                                    <?php if ($unreadMessages > 0): ?>
+                                        <span style="background: #dc3545; color: white; padding: 2px 6px; border-radius: 10px; font-size: 11px; margin-left: 5px;">
+                                            <?= $unreadMessages ?>
+                                        </span>
+                                    <?php endif; ?>
+                                </a></li>
+                            <?php endif; ?>
                             <li><a href="deconnexion.php" class="logout-link">Déconnexion</a></li>
                         </ul>
                     </div>

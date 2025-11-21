@@ -19,20 +19,50 @@
                 </button>
             </div>
             <?php
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            session_start();
+            require_once 'config.php';
+            
+            // Vérifier si l'utilisateur est connecté
+            if (!isset($_SESSION['user_id'])) {
+                echo '<div style="color:#dc3545; background:#f8d7da; border:2px solid #dc3545; padding:18px; border-radius:12px; margin:24px auto; max-width:600px; text-align:center; font-size:1.1em;">
+                        <i class="fas fa-exclamation-triangle"></i> Vous devez être connecté pour envoyer un message.
+                        <br><a href="connexion.php" style="color:#007bff; text-decoration:underline; margin-top:10px; display:inline-block;">Se connecter</a>
+                      </div>';
+            } else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $nom = trim($_POST['nom'] ?? '');
                 $email = trim($_POST['email'] ?? '');
                 $message = trim($_POST['message'] ?? '');
-                $destinataire = 'lucascharle43@gmail.com'; // <-- À personnaliser
+                
                 if ($nom && $email && $message) {
-                    $sujet = "Nouveau message de contact Luc & Luk Shop";
-                    $contenu = "Nom: $nom\nEmail: $email\nMessage:\n$message";
-                    $headers = "From: $email\r\nReply-To: $email\r\n";
-                    mail($destinataire, $sujet, $contenu, $headers);
-                    echo '<div style="color:#28a745; background:#eafaf1; border:2px solid #28a745; padding:18px; border-radius:12px; margin:24px auto; max-width:600px; text-align:center; font-size:1.1em;">Votre message a bien été envoyé !</div>';
+                    // Sauvegarder le message en base de données
+                    try {
+                        $stmt = $pdo->prepare("INSERT INTO messages_contact (nom, email, message) VALUES (?, ?, ?)");
+                        $stmt->execute([$nom, $email, $message]);
+                        echo '<div style="color:#28a745; background:#eafaf1; border:2px solid #28a745; padding:18px; border-radius:12px; margin:24px auto; max-width:600px; text-align:center; font-size:1.1em;">
+                                <i class="fas fa-check-circle"></i> Votre message a été envoyé avec succès ! L\'administrateur le lira bientôt.
+                              </div>';
+                    } catch (Exception $e) {
+                        echo '<div style="color:#dc3545; background:#f8d7da; border:2px solid #dc3545; padding:18px; border-radius:12px; margin:24px auto; max-width:600px; text-align:center; font-size:1.1em;">
+                                <i class="fas fa-exclamation-triangle"></i> Erreur lors de l\'envoi: ' . $e->getMessage() . '
+                              </div>';
+                    }
+                } else {
+                    echo '<div style="color:#dc3545; background:#f8d7da; border:2px solid #dc3545; padding:18px; border-radius:12px; margin:24px auto; max-width:600-px; text-align:center; font-size:1.1em;">
+                            <i class="fas fa-exclamation-triangle"></i> Veuillez remplir tous les champs correctement.
+                          </div>';
                 }
             }
             ?>
+            
+            <?php if (!isset($_SESSION['user_id'])): ?>
+                <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 8px; margin: 20px 0;">
+                    <h3 style="color: #495057;">Connexion requise</h3>
+                    <p style="color: #6c757d;">Vous devez être connecté pour envoyer un message.</p>
+                    <a href="connexion.php" style="background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 10px;">
+                        <i class="fas fa-sign-in-alt"></i> Se connecter
+                    </a>
+                </div>
+            <?php else: ?>
             <form method="post">
                 <div class="form-group">
                     <label for="nom">Nom :</label>
@@ -50,6 +80,7 @@
                     <i class="fas fa-paper-plane"></i> Envoyer
                 </button>
             </form>
+            <?php endif; ?>
         </div>
     </div>
 

@@ -1,7 +1,38 @@
 <?php
+session_start();
+
+// Désactiver l'affichage des erreurs pour éviter de casser le JSON
+error_reporting(0);
+ini_set('display_errors', 0);
+
+// Nettoyer le buffer de sortie
+if (ob_get_level()) {
+    ob_clean();
+}
+
 header('Content-Type: application/json');
+require_once 'config.php';
 
 $response = ['success' => false, 'message' => ''];
+
+// Vérifier si l'utilisateur est connecté
+if (!isset($_SESSION['user_id'])) {
+    $response['message'] = 'Vous devez être connecté pour envoyer un message.';
+    $response['redirect'] = 'connexion.php';
+    echo json_encode($response);
+    exit;
+}
+
+// Fonction pour sauvegarder le message en base de données
+function saveMessageToDatabase($pdo, $name, $email, $message) {
+    try {
+        $stmt = $pdo->prepare("INSERT INTO messages_contact (nom, email, message) VALUES (?, ?, ?)");
+        $stmt->execute([$name, $email, $message]);
+        return true;
+    } catch (PDOException $e) {
+        throw new Exception("Erreur base de données: " . $e->getMessage());
+    }
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
@@ -9,21 +40,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $message = filter_input(INPUT_POST, 'message', FILTER_SANITIZE_STRING);
 
     if ($name && $email && $message) {
-        $to = "lucascharle43@gmail.com"; // Remplacez par votre email
-        $subject = "Nouveau message de contact de " . $name;
-        $headers = "From: " . $email . "\r\n" .
-                  "Reply-To: " . $email . "\r\n" .
-                  "X-Mailer: PHP/" . phpversion();
-
-        $emailBody = "Nom: " . $name . "\n" .
-                    "Email: " . $email . "\n\n" .
-                    "Message:\n" . $message;
-
-        if (mail($to, $subject, $emailBody, $headers)) {
+        // Sauvegarder le message en base de données
+        try {
+            saveMessageToDatabase($pdo, $name, $email, $message);
             $response['success'] = true;
-            $response['message'] = 'Message envoyé avec succès!';
-        } else {
-            $response['message'] = "Une erreur est survenue lors de l'envoi du message.";
+            $response['message'] = 'Message envoyé avec succès! L\'administrateur le lira bientôt.';
+        } catch (Exception $e) {
+            $response['message'] = "Erreur lors de l'envoi: " . $e->getMessage();
         }
     } else {
         $response['message'] = "Veuillez remplir tous les champs correctement.";
@@ -32,4 +55,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $response['message'] = "Méthode non autorisée.";
 }
 
-echo json_encode($response);
+// S'assurer que la réponse est valide
+try {
+    $json = json_encode($response);
+    if (json_last_error() === JSON_ERROR_NONE) {
+        echo $json;
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Erreur de formatage JSON']);
+    }
+} catch (Exception $e) {
+    echo json_encode(['success' => false, 'message' => 'Erreur serveur: ' . $e->getMessage()]);
+}

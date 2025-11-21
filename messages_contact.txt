@@ -1,0 +1,30 @@
+=== MESSAGE REÇU LE 2025-11-21 07:28:52 ===
+Nom: lukluk
+Email: lucascharle43@gmail.com
+Message: test
+=====================================
+
+=== MESSAGE REÇU LE 2025-11-21 07:29:54 ===
+Nom: Test
+Email: test@test.com
+Message: Test message
+=====================================
+
+=== MESSAGE REÇU LE 2025-11-21 07:37:24 ===
+Nom: lukluk
+Email: lucascharle43@gmail.com
+Message: test
+=====================================
+
+=== MESSAGE REÇU LE 2025-11-21 07:41:19 ===
+Nom: Test Email
+Email: test@test.com
+Message: Test du nouveau système
+=====================================
+
+=== MESSAGE REÇU LE 2025-11-21 07:43:14 ===
+Nom: lukluk
+Email: lucascharle43@gmail.com
+Message: oki
+=====================================
+
