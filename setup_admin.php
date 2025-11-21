@@ -6,9 +6,9 @@ try {
     $stmt = $pdo->query("SHOW COLUMNS FROM users LIKE 'role'");
     if ($stmt->rowCount() == 0) {
         $pdo->exec("ALTER TABLE users ADD COLUMN role ENUM('user', 'admin') DEFAULT 'user'");
-        echo "✅ Champ 'role' ajouté à la table users\n";
+        echo "Champ 'role' ajouté à la table users\n";
     } else {
-        echo "ℹ️ Champ 'role' existe déjà\n";
+        echo "Champ 'role' existe déjà\n";
     }
     
     // Créer la table messages_contact
@@ -24,7 +24,7 @@ try {
     )";
     
     $pdo->exec($sql);
-    echo "✅ Table 'messages_contact' créée\n";
+    echo "Table 'messages_contact' créée\n";
     
     // Créer un utilisateur admin par défaut si aucun admin n'existe
     $stmt = $pdo->query("SELECT COUNT(*) FROM users WHERE role = 'admin'");
@@ -38,16 +38,16 @@ try {
         $stmt = $pdo->prepare("INSERT INTO users (nom, email, password, role) VALUES (?, ?, ?, 'admin')");
         $stmt->execute([$adminNom, $adminEmail, $adminPassword]);
         
-        echo "✅ Compte administrateur créé:\n";
-        echo "   Email: $adminEmail\n";
-        echo "   Mot de passe: admin123\n";
-        echo "   ⚠️ CHANGEZ CE MOT DE PASSE après la première connexion!\n";
+        echo "Compte administrateur créé:\n";
+        echo "Email: $adminEmail\n";
+        echo "Mot de passe: admin123\n";
+        echo "CHANGEZ CE MOT DE PASSE après la première connexion!\n";
     } else {
-        echo "ℹ️ Un compte administrateur existe déjà\n";
+        echo "Un compte administrateur existe déjà\n";
     }
     
-    echo "\n🎉 Base de données mise à jour avec succès!\n";
+    echo "\nBase de données mise à jour avec succès!\n";
     
 } catch (PDOException $e) {
-    echo "❌ Erreur: " . $e->getMessage() . "\n";
+    echo "Erreur: " . $e->getMessage() . "\n";
 }
