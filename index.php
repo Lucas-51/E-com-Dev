@@ -82,6 +82,52 @@ $panierCount = array_sum($_SESSION['panier']);
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .notification-badge {
+            background: linear-gradient(135deg, #ff4757, #ff3838);
+            color: white; 
+            padding: 3px 7px; 
+            border-radius: 12px; 
+            font-size: 10px; 
+            font-weight: bold;
+            margin-left: 8px;
+            min-width: 18px;
+            height: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(255, 71, 87, 0.3);
+            animation: pulse 2s infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .notification-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .notification-badge:hover::before {
+            left: 100%;
+        }
+        
+        .notification-badge:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(255, 71, 87, 0.4);
+        }
+    </style>
 </head>
 <body>
 <header class="main-header">
@@ -115,10 +161,10 @@ $panierCount = array_sum($_SESSION['panier']);
                             <li><a href="mon_compte.php">Mon compte</a></li>
                             <li><a href="historique.php">Historique</a></li>
                             <?php if ($userRole === 'admin'): ?>
-                                <li><a href="admin_messages.php" style="color: #007bff; font-weight: bold;">
+                                <li><a href="admin_messages.php" style="color: #007bff; font-weight: bold; position: relative; display: flex; align-items: center;">
                                     <i class="fas fa-cog"></i> Administration 
                                     <?php if ($unreadMessages > 0): ?>
-                                        <span style="background: #dc3545; color: white; padding: 2px 6px; border-radius: 10px; font-size: 11px; margin-left: 5px;">
+                                        <span class="notification-badge">
                                             <?= $unreadMessages ?>
                                         </span>
                                     <?php endif; ?>
